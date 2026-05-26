@@ -1,0 +1,32 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node Modules
+node_modules/
+Backend/node_modules/
+Frontent/node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+Backend/.env
+Frontent/.env
+
+# Build outputs
+Frontent/dist/
+Frontent/build/
+.vercel
+
+# OS Files
+.DS_Store
+Thumbs.db
+Backend/config/serviceAccountKey.json

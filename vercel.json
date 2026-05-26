@@ -1,0 +1,30 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "Backend/app.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "Frontent/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "dist"
+            }
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/Backend/app.js"
+        },
+        {
+            "source": "/assets/(.*)",
+            "destination": "/Frontent/dist/assets/$1"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/Frontent/dist/index.html"
+        }
+    ]
+}
