@@ -287,11 +287,12 @@ ${profileData.projects?.map(proj =>
       
       const element = document.getElementById('cv-document-container');
       const opt = {
-        margin:       1,
-        filename:     `CV-${companyName || 'company'}-${roleName || 'role'}-${Date.now()}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        margin: [15, 15, 15, 15],
+        filename: (cvContent?.profile?.firstname || user?.fullname?.firstname || 'Resume').toString().trim() + '_CV.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       await html2pdf().set(opt).from(element).save();
@@ -324,11 +325,12 @@ ${profileData.projects?.map(proj =>
       console.log('📄 Generating base64 PDF on the client-side...');
       const element = document.getElementById('cv-document-container');
       const opt = {
-        margin:       1,
-        filename:     'CV.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        margin: [15, 15, 15, 15],
+        filename: 'CV.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       // Generate base64 PDF string
