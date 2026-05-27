@@ -19,6 +19,14 @@
             "destination": "/Backend/app.js"
         },
         {
+            "source": "/auth/(.*)",
+            "destination": "/Backend/app.js"
+        },
+        {
+            "source": "/users/(.*)",
+            "destination": "/Backend/app.js"
+        },
+        {
             "source": "/assets/(.*)",
             "destination": "/assets/$1"
         },
