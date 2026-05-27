@@ -378,23 +378,36 @@ ${profileData.projects?.map(proj =>
     try {
       setPdfLoading(true);
   
-      const response = await api.post('/api/pdf/generate-analyzed', { // ✅ This path is correct
+      const response = await api.post('/api/pdf/generate-analyzed', {
         feedback: feedbackForPdf,
         company: selectedCompany.label,
         role: selectedRole.label,
         template: 'modern' 
-      }, {
-        responseType: 'blob'
       });
-      // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `AI-Analyzed-CV-${selectedCompany.label}-${selectedRole.label}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+
+      if (!response.data.success || !response.data.html) {
+        throw new Error('Failed to get HTML for PDF generation');
+      }
+
+      // Create a temporary container for html2pdf to process
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = response.data.html;
+      document.body.appendChild(tempContainer); // Must be in DOM for html2pdf to work properly
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px'; // Hide it from view
+
+      const opt = {
+        margin:       0, // The HTML template already has its own padding/margins
+        filename:     `AI-Analyzed-CV-${selectedCompany.label}-${selectedRole.label}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      await html2pdf().set(opt).from(tempContainer).save();
+      
+      // Cleanup
+      document.body.removeChild(tempContainer);
   
       console.log('✅ Your AI-Analyzed CV has been downloaded!');
     } catch (error) {

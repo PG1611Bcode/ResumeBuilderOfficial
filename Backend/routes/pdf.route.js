@@ -737,13 +737,13 @@ function generateTechnicalTemplate(data, profileData) {
 }
 
 // ========================================================
-// AI-Analyzed CV PDF Route (Unchanged - Functionality Preserved)
+// AI-Analyzed CV PDF Route — returns HTML for client-side pdf generation
 // ========================================================
 router.post('/generate-analyzed', auth, async (req, res) => {
   try {
-    console.log('AI-Analyzed PDF generation request received');
+    console.log('AI-Analyzed HTML generation request received');
 
-    const { feedback, company, role, template } = req.body;
+    const { feedback, company, role } = req.body;
 
     if (!feedback) {
       return res.status(400).json({ 
@@ -751,48 +751,15 @@ router.post('/generate-analyzed', auth, async (req, res) => {
       });
     }
 
-    // Create enhanced HTML with analysis data
+    // Build HTML and return it — the frontend renders the PDF via html2pdf.js
     const htmlContent = generateAnalyzedCVHTML(feedback, company, role);
 
-    // Generate PDF
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { 
-      waitUntil: 'networkidle0' 
-    });
-
-    const pdf = await page.pdf({
-      format: 'A4',
-      margin: { 
-        top: '0.5in', 
-        right: '0.6in', 
-        bottom: '0.5in', 
-        left: '0.6in' 
-      },
-      printBackground: true,
-      preferCSSPageSize: true
-    });
-    
-    await browser.close();
-
-    const filename = `AI-Analyzed-CV-${company || 'Resume'}-${role || 'Position'}.pdf`.replace(/\s+/g, '-');
-    
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=${filename}`,
-      'Content-Length': pdf.length
-    });
-    
-    res.send(pdf);
+    res.status(200).json({ success: true, html: htmlContent });
 
   } catch (error) {
-    console.error('AI-Analyzed PDF generation error:', error);
+    console.error('AI-Analyzed HTML generation error:', error);
     res.status(500).json({ 
-      message: 'Error generating AI-Analyzed PDF', 
+      message: 'Error generating analysis report', 
       error: error.message 
     });
   }

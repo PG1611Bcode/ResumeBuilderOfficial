@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
-const puppeteer = require('puppeteer'); // 1. ADDED THIS IMPORT
 const { getRoleRequirements } = require('../services/role.service');
 const { analyzeAndCustomizeCV, generateCVSuggestions } = require('../services/ai.service');
 const CVHistory = require('../models/cvHistory.model');
@@ -317,7 +316,7 @@ router.post('/upload', upload.single('cv'), async (req, res) => {
   }
 });
 
-// Download Route for history items
+// Download Route for history items — returns plain text (PDF is generated on the frontend)
 router.get('/download/:id', auth, async (req, res) => {
     try {
         const cvHistoryItem = await CVHistory.findOne({ _id: req.params.id, userId: req.user._id });
@@ -328,19 +327,18 @@ router.get('/download/:id', auth, async (req, res) => {
         if (!cvContent) {
             return res.status(400).json({ success: false, message: 'No content available for this CV.' });
         }
-        const htmlContent = `<!DOCTYPE html><html><head><style>body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 10pt; line-height: 1.5; margin: 1in; } pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; }</style></head><body><pre>${cvContent}</pre></body></html>`;
-        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-        const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-        const pdf = await page.pdf({ format: 'A4', printBackground: true });
-        await browser.close();
-        const filename = `CV-${cvHistoryItem.companyName}-${cvHistoryItem.roleName}.pdf`.replace(/\s+/g, '_');
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-        res.send(pdf);
+        // Return the text content so the frontend can render it and generate a PDF client-side
+        res.json({
+            success: true,
+            data: {
+                content: cvContent,
+                companyName: cvHistoryItem.companyName,
+                roleName: cvHistoryItem.roleName
+            }
+        });
     } catch (error) {
-        console.error('Error downloading CV from history:', error);
-        res.status(500).json({ success: false, message: 'Failed to generate and download CV PDF.' });
+        console.error('Error fetching CV from history:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch CV.' });
     }
 });
 
