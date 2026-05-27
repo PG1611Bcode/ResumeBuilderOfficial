@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import html2pdf from 'html2pdf.js';
 import { useAuth } from '../Context/AuthContext'; // 🔧 FIX: Added ../
 import api from '../services/api'; // 🔧 FIX: Added ../
 import companyData from '../assets/companies.json'; // 🔧 FIX: Added ../
@@ -281,35 +282,23 @@ ${profileData.projects?.map(proj =>
         return;
       }
       
-      console.log('📄 Generating PDF with content length:', cvContent.length);
-      console.log('🎨 Selected template:', selectedTemplate);
+      console.log('📄 Generating PDF on the client-side...');
       
-      // ✨ UPDATED: Send userProfile for hyperlink fix
-      const response = await api.post('/api/pdf/generate-cv-pdf', {
-        profileData: {
-          cvContent: cvContent,
-          template: selectedTemplate || 'classic',
-          userProfile: user // Pass the full user object
-        }
-      }, {
-        responseType: 'blob'
-      });
+      const element = document.getElementById('cv-document-container');
+      const opt = {
+        margin:       1,
+        filename:     `CV-${companyName || 'company'}-${roleName || 'role'}-${Date.now()}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
 
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `CV-${companyName || 'company'}-${roleName || 'role'}-${Date.now()}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      await html2pdf().set(opt).from(element).save();
       
       console.log('✅ PDF downloaded successfully');
     } catch (error) {
       console.error('❌ PDF generation error:', error);
-      console.error('Error response:', error.response?.data);
-      alert('Failed to generate PDF: ' + (error.response?.data?.message || error.message));
+      alert('Failed to generate PDF: ' + error.message);
     } finally {
       setPdfLoading(false);
     }
@@ -331,14 +320,23 @@ ${profileData.projects?.map(proj =>
     setEmailError('');
 
     try {
-      // ✨ UPDATED: Send userProfile for hyperlink fix
+      console.log('📄 Generating base64 PDF on the client-side...');
+      const element = document.getElementById('cv-document-container');
+      const opt = {
+        margin:       1,
+        filename:     'CV.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      // Generate base64 PDF string
+      const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring');
+
       const payload = {
         toEmail: recipient,
-        profileData: {
-          cvContent: improvedCV,
-          template: selectedTemplate,
-          userProfile: user // Pass the full user object
-        },
+        pdfBase64: pdfBase64,
+        userFullname: user?.fullname ? `${user.fullname.firstname || ''} ${user.fullname.lastname || ''}`.trim() : user?.email
       };
 
       const response = await api.post('/api/pdf/email-cv-pdf', payload);
@@ -1460,7 +1458,9 @@ Note: AI analysis was not available, but basic optimizations have been applied.`
                     </button>
                   </div>
 
-                  <div style={{
+                  <div 
+                    id="cv-document-container"
+                    style={{
                     backgroundColor: 'white',
                     padding: '1.5rem',
                     borderRadius: '8px',

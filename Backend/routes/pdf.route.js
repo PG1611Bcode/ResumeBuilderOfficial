@@ -1,151 +1,27 @@
 const express = require('express');
-const puppeteer = require('puppeteer-core');
-const chromium = require('@sparticuz/chromium');
 const router = express.Router();
 const auth = require('../middleware/auth.middleware');
-const emailService = require('../services/email.service'); // ✨ IMPORT EMAIL SERVICE
+const emailService = require('../services/email.service');
 
 // ========================================================
-// ✨ NEW HELPER: Refactored PDF Generation Logic
-// ========================================================
-async function generatePdfAsBuffer(profileData) {
-    if (!profileData || !profileData.cvContent) {
-        throw new Error('CV content is required');
-    }
-
-    // Parse and clean the CV content
-    const parsedData = parseAndCleanResumeContent(profileData.cvContent);
-
-    // Initialize data structure that templates expect
-    const data = {
-        name: parsedData.name || "Your Name",
-        contact: parsedData.contact || "", // ✨ This now comes from the CV text
-        summary: "",
-        experience: [],
-        skills: [],
-        education: [],
-        projects: [],
-        certifications: [],
-        highlights: []
-    };
-
-    // Transform dynamicSections into the arrays that templates expect
-    if (parsedData.dynamicSections && parsedData.dynamicSections.length > 0) {
-        console.log('Processing sections:', parsedData.dynamicSections.map(s => s.title));
-        
-        parsedData.dynamicSections.forEach(section => {
-            const content = Array.isArray(section.content) ? section.content : [section.content];
-            const type = section.type ? section.type.toLowerCase() : 'other';
-
-            switch(type) {
-                case 'summary':
-                    data.summary = content.join(' \n ');
-                    break;
-                case 'experience':
-                    data.experience.push(...content);
-                    break;
-                case 'skills':
-                    data.skills.push(...content);
-                    break;
-                case 'education':
-                    data.education.push(...content);
-                    break;
-                case 'projects':
-                    data.projects.push(...content);
-                    break;
-                case 'certifications':
-                    data.certifications.push(...content);
-                    break;
-                case 'highlights':
-                    data.highlights.push(...content);
-                    break;
-                case 'declaration':
-                    data.highlights.push(...content);
-                    break;
-                default:
-                    // Only add if it's not the contact info we already handled
-                    if (type !== 'contact') {
-                         data.highlights.push(`${section.title}:`, ...content);
-                    }
-            }
-        });
-    }
-
-    // Create HTML template based on selected template
-    const htmlContent = generateProfessionalHTML(data, profileData);
-
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-        ignoreHTTPSErrors: true,
-    });
-
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-    
-    const pdf = await page.pdf({
-        format: 'A4',
-        margin: { top: '0.4in', right: '0.5in', bottom: '0.4in', left: '0.5in' },
-        printBackground: true,
-        preferCSSPageSize: true
-    });
-
-    await browser.close();
-    
-    return pdf; // Return the PDF buffer
-}
-
-
-// ========================================================
-// UPDATED ROUTE: Use the refactored function
-// ========================================================
-router.post('/generate-cv-pdf', auth, async (req, res) => {
-    try {
-        console.log('PDF generation request received:', req.body.profileData.template);
-        
-        // ✨ UPDATED: Pass the whole profileData object
-        // The frontend will now send { cvContent, template, userProfile }
-        const pdf = await generatePdfAsBuffer(req.body.profileData);
-
-        res.set({
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename=professional-cv.pdf',
-            'Content-Length': pdf.length
-        });
-
-        res.send(pdf);
-    } catch (error) {
-        console.error('PDF generation error:', error);
-        res.status(500).json({ message: 'Error generating PDF', error: error.message });
-    }
-});
-
-
-// ========================================================
-// ✨ NEW ROUTE: Email CV
+// ROUTE: Email CV
 // ========================================================
 router.post('/email-cv-pdf', auth, async (req, res) => {
     try {
-        const { profileData, toEmail } = req.body;
+        const { toEmail, pdfBase64, userFullname } = req.body;
 
-        if (!toEmail) {
-            return res.status(400).json({ message: 'Email address (toEmail) is required' });
+        if (!toEmail || !pdfBase64) {
+            return res.status(400).json({ message: 'Email address and PDF data are required' });
         }
 
         console.log(`Email CV request received for: ${toEmail}`);
 
-        // 1. Generate the PDF buffer
-        const pdf = await generatePdfAsBuffer(profileData);
+        // Convert base64 to buffer
+        const base64Data = pdfBase64.replace(/^data:application\/pdf;base64,/, "");
+        const pdfBuffer = Buffer.from(base64Data, 'base64');
         
-        // 2. Get user's name for personalizing the email
-        const userFullname = req.user.fullname ? 
-            `${req.user.fullname.firstname || ''} ${req.user.fullname.lastname || ''}`.trim() : 
-            req.user.email;
-        
-        // 3. Send the email
-        await emailService.sendCvEmail(toEmail, pdf, userFullname || 'User');
+        // Send the email
+        await emailService.sendCvEmail(toEmail, pdfBuffer, userFullname || req.user.email || 'User');
 
         res.status(200).json({ success: true, message: `CV successfully sent to ${toEmail}` });
 
@@ -154,7 +30,6 @@ router.post('/email-cv-pdf', auth, async (req, res) => {
         res.status(500).json({ message: 'Error emailing PDF', error: error.message });
     }
 });
-
 
 // ========================================================
 // 🔧 FIX: Hyperlink Function
