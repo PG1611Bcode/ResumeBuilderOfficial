@@ -277,7 +277,7 @@ ${profileData.projects?.map(proj =>
     try {
       setPdfLoading(true);
       
-      if (!cvContent || cvContent.trim().length === 0) {
+      if (!cvContent || (typeof cvContent === 'string' && cvContent.trim().length === 0)) {
         alert('No CV content available. Please analyze your CV first.');
         setPdfLoading(false);
         return;
