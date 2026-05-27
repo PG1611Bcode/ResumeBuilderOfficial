@@ -5,6 +5,7 @@ import { useAuth } from '../Context/AuthContext'; // 🔧 FIX: Added ../
 import api from '../services/api'; // 🔧 FIX: Added ../
 import companyData from '../assets/companies.json'; // 🔧 FIX: Added ../
 import CoverLetterGenerator from '../components/CoverLetterGenerator'; // 🔧 FIX: Added ../
+import ResumePreview from '../components/ResumePreview';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -1475,16 +1476,14 @@ Note: AI analysis was not available, but basic optimizations have been applied.`
                     id="cv-document-container"
                     style={{
                     backgroundColor: 'white',
-                    padding: '1.5rem',
                     borderRadius: '8px',
                     border: '1px solid #e0e0e0',
-                    whiteSpace: 'pre-wrap',
-                    fontFamily: 'monospace',
-                    fontSize: '0.875rem',
-                    maxHeight: '600px',
-                    overflowY: 'auto'
+                    overflow: 'hidden'
                   }}>
-                    {improvedCV}
+                    <ResumePreview 
+                        data={combineRealDataWithAI(user, improvedCV, selectedCompany?.label, selectedRole?.value)} 
+                        template={selectedTemplate} 
+                    />
                   </div>
                 </div>
               )}

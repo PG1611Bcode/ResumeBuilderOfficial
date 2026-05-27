@@ -349,8 +349,20 @@ const CVHistoryDetail = () => {
                           {feedback.recommendations?.strengths?.length > 0 && (
                               <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '2px solid #22c55e' }}>
                                   <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#16a34a', marginBottom: '15px' }}>✅ CV Strengths</h3>
-                                  <ul style={{ listStyle: 'disc', paddingLeft: '20px', margin: 0 }}>
-                                      {feedback.recommendations.strengths.map((s, i) => <li key={i} style={{ marginBottom: '10px' }}>{s}</li>)}
+                                  <ul style={{ listStyle: 'none', paddingLeft: '0', margin: 0 }}>
+                                      {feedback.recommendations.strengths.map((s, i) => (
+                                          <li key={i} style={{ marginBottom: '12px', paddingLeft: '20px', position: 'relative' }}>
+                                              <span style={{ position: 'absolute', left: 0, color: '#16a34a' }}>✓</span>
+                                              {typeof s === 'object' ? (
+                                                  <>
+                                                      <strong style={{ color: '#166534' }}>{s.point}</strong>
+                                                      {s.detail && <div style={{ fontSize: '0.9rem', color: '#4b5563', marginTop: '2px' }}>{s.detail}</div>}
+                                                  </>
+                                              ) : (
+                                                  <span style={{ color: '#166534' }}>{s}</span>
+                                              )}
+                                          </li>
+                                      ))}
                                   </ul>
                               </div>
                           )}
@@ -358,8 +370,25 @@ const CVHistoryDetail = () => {
                           {feedback.recommendations?.weaknesses?.length > 0 && (
                               <div style={{ background: '#fef2f2', padding: '20px', borderRadius: '12px', border: '2px solid #ef4444' }}>
                                   <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#dc2626', marginBottom: '15px' }}>⚠️ Areas to Improve</h3>
-                                  <ul style={{ listStyle: 'disc', paddingLeft: '20px', margin: 0 }}>
-                                      {feedback.recommendations.weaknesses.map((w, i) => <li key={i} style={{ marginBottom: '10px' }}>{w}</li>)}
+                                  <ul style={{ listStyle: 'none', paddingLeft: '0', margin: 0 }}>
+                                      {feedback.recommendations.weaknesses.map((w, i) => (
+                                          <li key={i} style={{ marginBottom: '12px', paddingLeft: '20px', position: 'relative' }}>
+                                              <span style={{ position: 'absolute', left: 0, color: '#dc2626' }}>!</span>
+                                              {typeof w === 'object' ? (
+                                                  <>
+                                                      <strong style={{ color: '#991b1b' }}>{w.point}</strong>
+                                                      {w.detail && <div style={{ fontSize: '0.9rem', color: '#4b5563', marginTop: '2px' }}>{w.detail}</div>}
+                                                      {w.actionableStep && (
+                                                          <div style={{ fontSize: '0.85rem', marginTop: '4px', padding: '4px 8px', background: '#fee2e2', borderLeft: '2px solid #ef4444', color: '#991b1b' }}>
+                                                              💡 {w.actionableStep}
+                                                          </div>
+                                                      )}
+                                                  </>
+                                              ) : (
+                                                  <span style={{ color: '#991b1b' }}>{w}</span>
+                                              )}
+                                          </li>
+                                      ))}
                                   </ul>
                               </div>
                           )}
