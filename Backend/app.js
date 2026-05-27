@@ -68,7 +68,7 @@ app.use('/api/cv-history', cvHistoryRoutes); // 🆕 ADD THIS LINE (if not alrea
 
 app.use('/api/pdf', pdfRoutes); // 🆕 ADD THIS LINE
 
-app.use('/api', roleRoutes); // 🆕 ADD THIS LINE FOR ROLE REQUIREMENTS
+app.use('/api', roleRoutes);
 
 app.use('/api/learning', learningRoutes);
 

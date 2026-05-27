@@ -5,6 +5,8 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../services/api'; // 🔧 FIX: Corrected path
 import { cvTemplates } from '../components/cvTemplates'; // 🔧 FIX: Corrected path
 import { useAuth } from '../Context/AuthContext'; // 🔧 FIX: Corrected path
+import html2pdf from 'html2pdf.js';
+import ResumePreview from '../components/ResumePreview';
 
 const CVHistoryDetail = () => {
   const { id } = useParams();
@@ -23,6 +25,59 @@ const CVHistoryDetail = () => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState('');
   const [emailError, setEmailError] = useState('');
+
+  const combineRealDataWithAI = (realUserData, cvContent, companyName, roleName) => {
+    let combinedData = {
+      fullname: realUserData?.fullname || { firstname: "John", lastname: "Smith" },
+      profile: {
+        phone: realUserData?.profile?.phone || "+1-555-123-4567",
+        email: realUserData?.profile?.email || "user@email.com",
+        linkedIn: realUserData?.profile?.linkedIn || "linkedin.com/in/profile",
+        github: realUserData?.profile?.github || "github.com/username",
+        portfolio: realUserData?.profile?.portfolio || "",
+        summary: realUserData?.profile?.summary || ""
+      },
+      experience: realUserData?.experience || [],
+      education: realUserData?.education || [],
+      projects: realUserData?.projects || [],
+      certifications: realUserData?.certifications || [],
+      awards: realUserData?.awards || [],
+      volunteer: realUserData?.volunteer || [],
+      interests: realUserData?.interests || [],
+      skills: realUserData?.skills || { technical: [], soft: [], languages: [] }
+    };
+    
+    if (!cvContent) return combinedData;
+
+    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|$)/i);
+    if (summaryMatch) {
+      combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    }
+    
+    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|$)/i);
+    if (skillsMatch) {
+      const aiSkills = [];
+      const skillsText = skillsMatch[1];
+      const skillParts = skillsText.split(/[,\n•\-:|()]/)
+        .map(skill => skill.trim())
+        .filter(skill => skill && skill.length > 2 && skill.length < 30 && !skill.match(/^(Technical|Skills?|Product|Process|Stack|Tools?)$/i));
+      aiSkills.push(...skillParts);
+      combinedData.skills.technical = [...new Set([...(combinedData.skills.technical || []), ...aiSkills])];
+    }
+    
+    if (!combinedData.fullname.firstname || combinedData.fullname.firstname === "John") {
+      const nameMatch = cvContent.match(/^([A-Z\s]+)/m);
+      if (nameMatch) {
+        const nameParts = nameMatch[1].replace(/AI-OPTIMIZED|CV FOR|Amazon|Microsoft|Google/g, '').trim().split(' ');
+        if (nameParts.length >= 2) {
+          combinedData.fullname.firstname = nameParts[0];
+          combinedData.fullname.lastname = nameParts.slice(1).join(' ');
+        }
+      }
+    }
+    
+    return combinedData;
+  };
 
   const fetchCourseRecommendations = async (missingSkills, company, role, cvText) => {
     // ... existing code ...
@@ -88,21 +143,19 @@ const CVHistoryDetail = () => {
     }
     try {
       setPdfLoading(true);
-      const response = await api.post('/api/pdf/generate-cv-pdf', {
-        profileData: {
-          cvContent: cvContent,
-          template: selectedTemplate
-        }
-      }, {
-        responseType: 'blob'
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `CV-${companyName}-${roleName}-${Date.now()}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      
+      const element = document.getElementById('cv-history-preview-container');
+      if (!element) throw new Error("Preview container not found");
+      
+      const opt = {
+        margin:       0,
+        filename:     `CV-${companyName || 'company'}-${roleName || 'role'}-${Date.now()}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      await html2pdf().set(opt).from(element).save();
     } catch (err) {
       console.error('PDF generation error:', err);
       alert('Failed to generate PDF.');
@@ -453,8 +506,11 @@ const CVHistoryDetail = () => {
                       </button>
                   </div>
 
-                  <div style={{ backgroundColor: '#f7fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e0e0e0', whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '0.875rem', maxHeight: '600px', overflowY: 'auto' }}>
-                      {cvData.improvedCV || cvData.originalCV}
+                  <div id="cv-history-preview-container" style={{ borderRadius: '8px', border: '1px solid #e0e0e0', overflow: 'hidden', backgroundColor: 'white' }}>
+                      <ResumePreview 
+                        data={combineRealDataWithAI(user, cvData.improvedCV || cvData.originalCV, cvData.companyName, cvData.roleName)} 
+                        template={selectedTemplate} 
+                      />
                   </div>
               </div>
 
