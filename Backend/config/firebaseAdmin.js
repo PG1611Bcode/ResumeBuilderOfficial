@@ -1,5 +1,9 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
+
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  throw new Error("Missing FIREBASE_SERVICE_ACCOUNT environment variable.");
+}
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 // Prevent re-initialization error if the file is imported multiple times
 if (!admin.apps.length) {
