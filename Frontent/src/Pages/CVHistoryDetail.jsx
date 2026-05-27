@@ -49,12 +49,12 @@ const CVHistoryDetail = () => {
     
     if (!cvContent) return combinedData;
 
-    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|\nEXPERIENCE|\nEDUCATION|$)/i);
+    const summaryMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROFESSIONAL SUMMARY|SUMMARY)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:SKILLS|WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
     if (summaryMatch) {
       combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
     }
     
-    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|\nPROJECTS|$)/i);
+    const skillsMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
     if (skillsMatch) {
       const aiSkills = [];
       const skillsText = skillsMatch[1];
@@ -65,9 +65,9 @@ const CVHistoryDetail = () => {
       combinedData.skills.technical = [...new Set([...(combinedData.skills.technical || []), ...aiSkills])];
     }
     
-    const expMatch = cvContent.match(/(?:WORK EXPERIENCE|EXPERIENCE)\s*\n([\s\S]*?)(?=\n(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|$))/i);
+    const expMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|PROFESSIONAL EXPERIENCE)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS)[*#\s]*(?:\n|$)|$)/i);
     if (expMatch && expMatch[1].trim()) {
-      combinedData.experience = expMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.experience = expMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let position = '', company = '', date = '';
@@ -79,7 +79,7 @@ const CVHistoryDetail = () => {
           date = rest[1] || '';
         }
         return {
-          position: position || header,
+          position: position || header.replace(/\*\*/g, '').trim(),
           company,
           startDate: date,
           description: lines.slice(1).join('\n')
@@ -87,9 +87,9 @@ const CVHistoryDetail = () => {
       });
     }
 
-    const eduMatch = cvContent.match(/EDUCATION\s*\n([\s\S]*?)(?=\n(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    const eduMatch = cvContent.match(/(?:\n|^)[*#\s]*EDUCATION[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
     if (eduMatch && eduMatch[1].trim()) {
-      combinedData.education = eduMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.education = eduMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let degree = '', institution = '', year = '';
@@ -101,16 +101,16 @@ const CVHistoryDetail = () => {
           year = rest[1] || '';
         }
         return {
-          degree: degree || header,
+          degree: degree || header.replace(/\*\*/g, '').trim(),
           institution,
           year,
         };
       });
     }
 
-    const projMatch = cvContent.match(/PROJECTS\s*\n([\s\S]*?)(?=\n(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    const projMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROJECTS|NOTABLE PROJECTS)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
     if (projMatch && projMatch[1].trim()) {
-      combinedData.projects = projMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.projects = projMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let name = '';
@@ -119,7 +119,7 @@ const CVHistoryDetail = () => {
           name = titleMatch ? titleMatch[1] : header;
         }
         return {
-          name: name || header,
+          name: name || header.replace(/\*\*/g, '').trim(),
           description: lines.slice(1).join('\n')
         };
       });
@@ -208,11 +208,12 @@ const CVHistoryDetail = () => {
       if (!element) throw new Error("Preview container not found");
       
       const opt = {
-        margin:       0,
+        margin:       [15, 15, 15, 15],
         filename:     `CV-${companyName || 'company'}-${roleName || 'role'}-${Date.now()}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       await html2pdf().set(opt).from(element).save();
@@ -514,7 +515,7 @@ const CVHistoryDetail = () => {
                   Actions
                   </h2>
 
-                  <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+                  <div data-html2canvas-ignore="true" style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
                       {/* ... existing template selection JSX ... */}
                       <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Choose CV Template</h3>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
@@ -528,7 +529,7 @@ const CVHistoryDetail = () => {
                   </div>
 
                   {/* ✨ NEW: Wrapped buttons in a flex container */}
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+                  <div data-html2canvas-ignore="true" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                       {/* Existing Download Button */}
                       <button
                           onClick={() => generateProfessionalPDF(cvData.improvedCV || cvData.originalCV, cvData.companyName, cvData.roleName)}

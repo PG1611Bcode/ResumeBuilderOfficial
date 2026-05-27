@@ -372,11 +372,12 @@ ${profileData.projects?.map(proj =>
       }
       
       const opt = {
-        margin:       0.2, // Small margin to ensure borders aren't cut off
+        margin:       [15, 15, 15, 15],
         filename:     `AI-Analyzed-CV-${selectedCompany?.label || 'Company'}-${selectedRole?.label || 'Role'}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       await html2pdf().set(opt).from(element).save();
@@ -415,12 +416,12 @@ ${profileData.projects?.map(proj =>
       skills: realUserData?.skills || { technical: [], soft: [], languages: [] }
     };
     
-    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|\nEXPERIENCE|\nEDUCATION|$)/i);
+    const summaryMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROFESSIONAL SUMMARY|SUMMARY)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:SKILLS|WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
     if (summaryMatch) {
       combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
     }
     
-    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|\nPROJECTS|$)/i);
+    const skillsMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
     if (skillsMatch) {
       const aiSkills = [];
       const skillsText = skillsMatch[1];
@@ -440,9 +441,9 @@ ${profileData.projects?.map(proj =>
       combinedData.skills.technical = mergedTechSkills;
     }
 
-    const expMatch = cvContent.match(/(?:WORK EXPERIENCE|EXPERIENCE)\s*\n([\s\S]*?)(?=\n(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|$))/i);
+    const expMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|PROFESSIONAL EXPERIENCE)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS)[*#\s]*(?:\n|$)|$)/i);
     if (expMatch && expMatch[1].trim()) {
-      combinedData.experience = expMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.experience = expMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let position = '', company = '', date = '';
@@ -454,7 +455,7 @@ ${profileData.projects?.map(proj =>
           date = rest[1] || '';
         }
         return {
-          position: position || header,
+          position: position || header.replace(/\*\*/g, '').trim(),
           company,
           startDate: date,
           description: lines.slice(1).join('\n')
@@ -462,9 +463,9 @@ ${profileData.projects?.map(proj =>
       });
     }
 
-    const eduMatch = cvContent.match(/EDUCATION\s*\n([\s\S]*?)(?=\n(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    const eduMatch = cvContent.match(/(?:\n|^)[*#\s]*EDUCATION[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
     if (eduMatch && eduMatch[1].trim()) {
-      combinedData.education = eduMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.education = eduMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let degree = '', institution = '', year = '';
@@ -476,16 +477,16 @@ ${profileData.projects?.map(proj =>
           year = rest[1] || '';
         }
         return {
-          degree: degree || header,
+          degree: degree || header.replace(/\*\*/g, '').trim(),
           institution,
           year,
         };
       });
     }
 
-    const projMatch = cvContent.match(/PROJECTS\s*\n([\s\S]*?)(?=\n(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    const projMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROJECTS|NOTABLE PROJECTS)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
     if (projMatch && projMatch[1].trim()) {
-      combinedData.projects = projMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+      combinedData.projects = projMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
         const lines = block.trim().split('\n');
         const header = lines[0];
         let name = '';
@@ -494,7 +495,7 @@ ${profileData.projects?.map(proj =>
           name = titleMatch ? titleMatch[1] : header;
         }
         return {
-          name: name || header,
+          name: name || header.replace(/\*\*/g, '').trim(),
           description: lines.slice(1).join('\n')
         };
       });
@@ -1357,7 +1358,7 @@ Note: AI analysis was not available, but basic optimizations have been applied.`
                   )}
 
                   {/* Download Analyzed Report Button */}
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+                  <div data-html2canvas-ignore="true" style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
                     <button
                       onClick={handleDownloadPDF}
                       disabled={pdfLoading}
@@ -1428,7 +1429,7 @@ Note: AI analysis was not available, but basic optimizations have been applied.`
                   </div>
 
                   {/* ✨ UPDATED: Button container */}
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '30px' }}>
+                  <div data-html2canvas-ignore="true" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '30px' }}>
                     {/* Download Button */}
                     <button
                       onClick={async () => {
