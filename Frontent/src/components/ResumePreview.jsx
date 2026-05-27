@@ -29,7 +29,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
   // 1. Classic Professional
   if (template === 'classic') {
     return (
-      <div className="bg-[#ffffff] w-full text-[#1a1a1a] font-sans shadow-lg mx-auto" style={{ width: '800px', minHeight: '1131px', padding: '40px' }}>
+      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#1a1a1a] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '40px' }}>
         <div className="text-center mb-6 border-b-2 border-[#2c3e50] pb-4">
           <h1 className="text-[28px] font-bold text-[#2c3e50] uppercase tracking-wider mb-2">{name}</h1>
           <div className="flex justify-center gap-4 text-[13px] text-[#555555]">
@@ -70,7 +70,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                   <div className="text-[13px] font-medium text-[#444444] mb-2 italic">
                     {exp.company} {exp.location ? `| ${exp.location}` : ''}
                   </div>
-                  {exp.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify">{exp.description}</p>}
+                  {exp.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify whitespace-pre-wrap">{exp.description}</p>}
                 </div>
               ))}
             </div>
@@ -84,7 +84,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
               {projects.map((proj, i) => (
                 <div key={i}>
                   <h3 className="font-bold text-[#2c3e50] text-[14px]">{proj.name || proj.title}</h3>
-                  {proj.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify mt-1">{proj.description}</p>}
+                  {proj.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify mt-1 whitespace-pre-wrap">{proj.description}</p>}
                 </div>
               ))}
             </div>
@@ -114,7 +114,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
   // 2. Modern Tech
   if (template === 'modern') {
     return (
-      <div className="bg-[#ffffff] w-full text-[#2d3748] font-sans shadow-lg mx-auto" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
+      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2d3748] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
         <div className="text-[#ffffff] px-[40px] py-[30px] mb-[20px]" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
           <h1 className="text-[32px] font-bold mb-2">{name}</h1>
           {renderContact()}
@@ -152,7 +152,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                       </span>
                     </div>
                     <div className="text-[13px] font-medium text-[#4a5568] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#4a5568] leading-relaxed">{exp.description}</p>}
+                    {exp.description && <p className="text-[13px] text-[#4a5568] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
                   </div>
                 ))}
               </div>
@@ -166,7 +166,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                 {projects.map((proj, i) => (
                   <div key={i}>
                     <h3 className="font-bold text-[#2d3748] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#4a5568] leading-relaxed mt-1">{proj.description}</p>}
+                    {proj.description && <p className="text-[13px] text-[#4a5568] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
                   </div>
                 ))}
               </div>
@@ -197,7 +197,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
   // 3. Creative Portfolio
   if (template === 'creative') {
     return (
-      <div className="bg-[#ffffff] w-full text-[#2c2c2c] font-sans shadow-lg mx-auto" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
+      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2c2c2c] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
         <div className="text-[#ffffff] px-[40px] py-[35px] mb-[25px] rounded-b-[20px]" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
           <h1 className="text-[36px] font-bold mb-2 drop-shadow-sm">{name}</h1>
           {renderContact()}
@@ -235,7 +235,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                       </span>
                     </div>
                     <div className="text-[13px] font-medium text-[#666666] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#444444] leading-relaxed">{exp.description}</p>}
+                    {exp.description && <p className="text-[13px] text-[#444444] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
                   </div>
                 ))}
               </div>
@@ -249,7 +249,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                 {projects.map((proj, i) => (
                   <div key={i} className="border-l-4 border-[#f5576c] pl-4">
                     <h3 className="font-bold text-[#2c2c2c] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#444444] leading-relaxed mt-1">{proj.description}</p>}
+                    {proj.description && <p className="text-[13px] text-[#444444] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
                   </div>
                 ))}
               </div>
@@ -280,7 +280,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
   // 4. Minimal Executive
   if (template === 'minimal') {
     return (
-      <div className="bg-[#ffffff] w-full text-[#2c2c2c] font-serif shadow-lg mx-auto" style={{ width: '800px', minHeight: '1131px', padding: '50px' }}>
+      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2c2c2c] font-serif shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '50px' }}>
         <div className="text-center mb-8 pb-6 border-b border-[#cccccc]">
           <h1 className="text-[32px] font-normal text-[#1a1a1a] mb-3">{name}</h1>
           <div className="flex justify-center gap-4 text-[12px] text-[#666666] font-sans">
@@ -309,7 +309,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                       {exp.startDate || exp.duration} {exp.endDate ? `to ${exp.endDate}` : ''}
                     </span>
                   </div>
-                  {exp.description && <p className="text-[13px] text-[#444444] leading-[1.7] text-justify mt-2">{exp.description}</p>}
+                  {exp.description && <p className="text-[13px] text-[#444444] leading-[1.7] text-justify mt-2 whitespace-pre-wrap">{exp.description}</p>}
                 </div>
               ))}
             </div>
@@ -347,7 +347,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
 
   // 5. Technical Expert
   return (
-    <div className="bg-[#ffffff] w-full text-[#1f2937] font-sans shadow-lg mx-auto" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
+    <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#1f2937] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
       <div className="bg-[#ea580c] text-[#ffffff] px-[40px] py-[25px] border-b-4 border-[#c2410c]">
         <h1 className="text-[28px] font-bold uppercase tracking-wider mb-2">{name}</h1>
         {renderContact()}
@@ -377,7 +377,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                       </span>
                     </div>
                     <div className="text-[13px] font-medium text-[#4b5563] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#374151] leading-relaxed">{exp.description}</p>}
+                    {exp.description && <p className="text-[13px] text-[#374151] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
                   </div>
                 ))}
               </div>
@@ -392,7 +392,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
                   <div key={i} className="relative pl-4 border-l-2 border-[#fdba74]">
                     <div className="absolute w-2 h-2 bg-[#ea580c] rounded-full -left-[5px] top-1.5"></div>
                     <h3 className="font-bold text-[#111827] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#374151] leading-relaxed mt-1">{proj.description}</p>}
+                    {proj.description && <p className="text-[13px] text-[#374151] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
                   </div>
                 ))}
               </div>

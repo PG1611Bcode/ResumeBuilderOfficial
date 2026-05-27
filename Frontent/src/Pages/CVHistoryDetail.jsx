@@ -49,12 +49,12 @@ const CVHistoryDetail = () => {
     
     if (!cvContent) return combinedData;
 
-    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|$)/i);
+    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|\nEXPERIENCE|\nEDUCATION|$)/i);
     if (summaryMatch) {
       combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
     }
     
-    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|$)/i);
+    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|\nPROJECTS|$)/i);
     if (skillsMatch) {
       const aiSkills = [];
       const skillsText = skillsMatch[1];
@@ -65,6 +65,66 @@ const CVHistoryDetail = () => {
       combinedData.skills.technical = [...new Set([...(combinedData.skills.technical || []), ...aiSkills])];
     }
     
+    const expMatch = cvContent.match(/(?:WORK EXPERIENCE|EXPERIENCE)\s*\n([\s\S]*?)(?=\n(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|$))/i);
+    if (expMatch && expMatch[1].trim()) {
+      combinedData.experience = expMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let position = '', company = '', date = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          position = titleMatch ? titleMatch[1] : '';
+          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
+          company = rest[0] || '';
+          date = rest[1] || '';
+        }
+        return {
+          position: position || header,
+          company,
+          startDate: date,
+          description: lines.slice(1).join('\n')
+        };
+      });
+    }
+
+    const eduMatch = cvContent.match(/EDUCATION\s*\n([\s\S]*?)(?=\n(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    if (eduMatch && eduMatch[1].trim()) {
+      combinedData.education = eduMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let degree = '', institution = '', year = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          degree = titleMatch ? titleMatch[1] : '';
+          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
+          institution = rest[0] || '';
+          year = rest[1] || '';
+        }
+        return {
+          degree: degree || header,
+          institution,
+          year,
+        };
+      });
+    }
+
+    const projMatch = cvContent.match(/PROJECTS\s*\n([\s\S]*?)(?=\n(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    if (projMatch && projMatch[1].trim()) {
+      combinedData.projects = projMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let name = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          name = titleMatch ? titleMatch[1] : header;
+        }
+        return {
+          name: name || header,
+          description: lines.slice(1).join('\n')
+        };
+      });
+    }
+
     if (!combinedData.fullname.firstname || combinedData.fullname.firstname === "John") {
       const nameMatch = cvContent.match(/^([A-Z\s]+)/m);
       if (nameMatch) {

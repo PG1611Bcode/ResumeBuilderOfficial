@@ -362,55 +362,25 @@ ${profileData.projects?.map(proj =>
 
   // Download PDF function (for analyzed report)
   const handleDownloadPDF = async () => {
-    const feedbackForPdf = {
-        matchScore: feedback.matchScore,
-        matchingSkills: feedback.analysis.matchingSkills,
-        missingSkills: feedback.analysis.missingSkills,
-        strengths: feedback.recommendations.strengths,
-        weaknesses: feedback.recommendations.weaknesses,
-        structure: feedback.recommendations.structure,
-    };
-
-    if (!feedbackForPdf || !selectedCompany || !selectedRole) {
-      alert('Please analyze your CV first');
-      return;
-    }
-  
     try {
       setPdfLoading(true);
-  
-      const response = await api.post('/api/pdf/generate-analyzed', {
-        feedback: feedbackForPdf,
-        company: selectedCompany.label,
-        role: selectedRole.label,
-        template: 'modern' 
-      });
-
-      if (!response.data.success || !response.data.html) {
-        throw new Error('Failed to get HTML for PDF generation');
+      
+      const element = document.getElementById('ai-analysis-report-container');
+      if (!element) {
+        alert('Could not find the Analysis Report container to download.');
+        return;
       }
-
-      // Create a temporary container for html2pdf to process
-      const tempContainer = document.createElement('div');
-      tempContainer.innerHTML = response.data.html;
-      document.body.appendChild(tempContainer); // Must be in DOM for html2pdf to work properly
-      tempContainer.style.position = 'absolute';
-      tempContainer.style.left = '-9999px'; // Hide it from view
-
+      
       const opt = {
-        margin:       0, // The HTML template already has its own padding/margins
-        filename:     `AI-Analyzed-CV-${selectedCompany.label}-${selectedRole.label}.pdf`,
+        margin:       0.2, // Small margin to ensure borders aren't cut off
+        filename:     `AI-Analyzed-CV-${selectedCompany?.label || 'Company'}-${selectedRole?.label || 'Role'}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
 
-      await html2pdf().set(opt).from(tempContainer).save();
-      
-      // Cleanup
-      document.body.removeChild(tempContainer);
-  
-      console.log('✅ Your AI-Analyzed CV has been downloaded!');
+      await html2pdf().set(opt).from(element).save();
+      console.log('✅ Your AI-Analyzed Report has been downloaded!');
     } catch (error) {
       console.error('Error downloading PDF:', error);
       alert('❌ Failed to download PDF. Please try again.');
@@ -445,12 +415,12 @@ ${profileData.projects?.map(proj =>
       skills: realUserData?.skills || { technical: [], soft: [], languages: [] }
     };
     
-    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|$)/i);
+    const summaryMatch = cvContent.match(/PROFESSIONAL SUMMARY\s*\n([\s\S]*?)(?=\nSKILLS|\nEXPERIENCE|\nEDUCATION|$)/i);
     if (summaryMatch) {
       combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
     }
     
-    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|$)/i);
+    const skillsMatch = cvContent.match(/SKILLS\s*\n([\s\S]*?)(?=\nEXPERIENCE|\nEDUCATION|\nPROJECTS|$)/i);
     if (skillsMatch) {
       const aiSkills = [];
       const skillsText = skillsMatch[1];
@@ -468,6 +438,66 @@ ${profileData.projects?.map(proj =>
       const mergedTechSkills = [...new Set([...existingTechSkills, ...aiSkills])];
       
       combinedData.skills.technical = mergedTechSkills;
+    }
+
+    const expMatch = cvContent.match(/(?:WORK EXPERIENCE|EXPERIENCE)\s*\n([\s\S]*?)(?=\n(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|$))/i);
+    if (expMatch && expMatch[1].trim()) {
+      combinedData.experience = expMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let position = '', company = '', date = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          position = titleMatch ? titleMatch[1] : '';
+          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
+          company = rest[0] || '';
+          date = rest[1] || '';
+        }
+        return {
+          position: position || header,
+          company,
+          startDate: date,
+          description: lines.slice(1).join('\n')
+        };
+      });
+    }
+
+    const eduMatch = cvContent.match(/EDUCATION\s*\n([\s\S]*?)(?=\n(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    if (eduMatch && eduMatch[1].trim()) {
+      combinedData.education = eduMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let degree = '', institution = '', year = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          degree = titleMatch ? titleMatch[1] : '';
+          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
+          institution = rest[0] || '';
+          year = rest[1] || '';
+        }
+        return {
+          degree: degree || header,
+          institution,
+          year,
+        };
+      });
+    }
+
+    const projMatch = cvContent.match(/PROJECTS\s*\n([\s\S]*?)(?=\n(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|EXPERIENCE|$))/i);
+    if (projMatch && projMatch[1].trim()) {
+      combinedData.projects = projMatch[1].trim().split(/(?=\n\*\*)/).filter(Boolean).map(block => {
+        const lines = block.trim().split('\n');
+        const header = lines[0];
+        let name = '';
+        if (header.includes('**')) {
+          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
+          name = titleMatch ? titleMatch[1] : header;
+        }
+        return {
+          name: name || header,
+          description: lines.slice(1).join('\n')
+        };
+      });
     }
     
     if (!combinedData.fullname.firstname || combinedData.fullname.firstname === "John") {
@@ -1143,8 +1173,8 @@ Note: AI analysis was not available, but basic optimizations have been applied.`
 
               {/* CV Analysis Results Section */}
               {feedback && feedback.analysis && (
-                <div style={{ 
-                  backgroundColor: '#f5f5f5', 
+                <div id="ai-analysis-report-container" style={{ 
+                  backgroundColor: '#ffffff', // Ensure white background for PDF capturing
                   padding: '1.5rem', 
                   borderRadius: '8px', 
                   marginBottom: '2rem',
