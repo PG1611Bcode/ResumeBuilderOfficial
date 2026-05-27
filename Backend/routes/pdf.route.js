@@ -1,5 +1,6 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 const router = express.Router();
 const auth = require('../middleware/auth.middleware');
 const emailService = require('../services/email.service'); // ✨ IMPORT EMAIL SERVICE
@@ -74,8 +75,11 @@ async function generatePdfAsBuffer(profileData) {
     const htmlContent = generateProfessionalHTML(data, profileData);
 
     const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();

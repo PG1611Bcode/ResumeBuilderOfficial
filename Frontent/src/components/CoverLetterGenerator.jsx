@@ -258,35 +258,35 @@ const CoverLetterGenerator = () => {
 
       {/* Generated Cover Letter Display */}
       {coverLetter && (
-        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '2px solid #48bb78' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '2px solid #e2e8f0' }}>
+        <div className="bg-white rounded-xl p-4 sm:p-8 shadow-md border-2 border-green-500 w-full">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b-2 border-gray-200 gap-4">
             <div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#2d3748', marginBottom: '0.25rem' }}>✅ Cover Letter Generated!</h3>
-              <p style={{ color: '#718096', fontSize: '0.9rem' }}>Version {coverLetter.version || 1} • Created {new Date(coverLetter.createdAt).toLocaleDateString()}</p>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">✅ Cover Letter Generated!</h3>
+              <p className="text-gray-500 text-sm">Version {coverLetter.version || 1} • Created {new Date(coverLetter.createdAt).toLocaleDateString()}</p>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button onClick={() => setEditMode(!editMode)} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: editMode ? 'white' : '#4299e1', background: editMode ? '#4299e1' : 'white', border: `2px solid #4299e1`, borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div className="flex flex-wrap sm:flex-nowrap gap-3 w-full sm:w-auto">
+              <button onClick={() => setEditMode(!editMode)} className={`flex-1 sm:flex-none px-4 py-2 text-sm font-medium rounded-md transition-all ${editMode ? 'text-white bg-blue-500 border-2 border-blue-500' : 'text-blue-500 bg-white border-2 border-blue-500'}`}>
                 {editMode ? '👁️ Preview' : '✏️ Edit'}
               </button>
-              <button onClick={handleRegenerate} disabled={generating} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: '#805ad5', background: 'white', border: '2px solid #805ad5', borderRadius: '6px', cursor: generating ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
+              <button onClick={handleRegenerate} disabled={generating} className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-purple-600 bg-white border-2 border-purple-600 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                 🔄 Regenerate
               </button>
-              <button onClick={handleDownload} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: 'white', background: '#48bb78', border: 'none', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}>
+              <button onClick={handleDownload} className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md transition-all">
                 📥 Download PDF
               </button>
             </div>
           </div>
-          <div style={{ background: '#f7fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <div className="bg-gray-50 p-4 sm:p-6 rounded-lg border border-gray-200 w-full overflow-hidden">
             {editMode ? (
-              <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} style={{ width: '100%', minHeight: '500px', padding: '1rem', fontSize: '1rem', lineHeight: '1.6', fontFamily: 'Georgia, serif', border: '1px solid #cbd5e0', borderRadius: '6px', resize: 'vertical' }} />
+              <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} className="w-full min-h-[500px] p-4 text-base leading-relaxed font-serif border border-gray-300 rounded-md resize-y" />
             ) : (
-              <div style={{ fontSize: '1rem', lineHeight: '1.8', color: '#2d3748', fontFamily: 'Georgia, serif', whiteSpace: 'pre-wrap' }}>
+              <div className="text-base leading-relaxed text-gray-800 font-serif whitespace-pre-wrap w-full">
                 {editedContent || coverLetter.content}
               </div>
             )}
           </div>
-          <div style={{ marginTop: '1rem', padding: '1rem', background: '#edf2f7', borderRadius: '6px', borderLeft: '4px solid #4299e1' }}>
-            <p style={{ fontSize: '0.875rem', color: '#4a5568', margin: 0 }}>
+          <div className="mt-4 p-4 bg-gray-100 rounded-md border-l-4 border-blue-500">
+            <p className="text-sm text-gray-600 m-0">
               💡 <strong>Tip:</strong> You can edit the content above and download your customized version.
             </p>
           </div>
