@@ -178,10 +178,10 @@ const CVHistoryDetail = () => {
       if (!element) throw new Error("Preview container not found");
       
       const opt = {
-        margin: [15, 15, 15, 15],
+        margin: 10,
         filename: (cvContent?.profile?.firstname || user?.fullname?.firstname || 'Resume').toString().trim() + '_CV.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true, windowWidth: 794 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };

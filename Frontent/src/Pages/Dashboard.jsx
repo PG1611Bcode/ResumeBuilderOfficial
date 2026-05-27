@@ -287,10 +287,10 @@ ${profileData.projects?.map(proj =>
       
       const element = document.getElementById('cv-document-container');
       const opt = {
-        margin: [15, 15, 15, 15],
+        margin: 10,
         filename: (cvContent?.profile?.firstname || user?.fullname?.firstname || 'Resume').toString().trim() + '_CV.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true, windowWidth: 794 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
@@ -325,10 +325,10 @@ ${profileData.projects?.map(proj =>
       console.log('📄 Generating base64 PDF on the client-side...');
       const element = document.getElementById('cv-document-container');
       const opt = {
-        margin: [15, 15, 15, 15],
+        margin: 10,
         filename: 'CV.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true, windowWidth: 794 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
