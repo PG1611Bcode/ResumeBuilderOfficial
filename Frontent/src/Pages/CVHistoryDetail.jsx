@@ -136,6 +136,9 @@ const CVHistoryDetail = () => {
       }
     }
     
+    // ── Forward raw markdown so ResumePreview can render it directly
+    combinedData._rawMarkdown = typeof cvContent === 'string' ? cvContent : '';
+
     return combinedData;
   };
 

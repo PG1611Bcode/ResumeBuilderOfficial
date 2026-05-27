@@ -512,6 +512,10 @@ ${profileData.projects?.map(proj =>
       }
     }
     
+    // ── Always attach the raw markdown so ResumePreview can render it
+    //    directly if the regex parsers above produced empty arrays.
+    combinedData._rawMarkdown = typeof cvContent === 'string' ? cvContent : '';
+
     console.log('Combined data for PDF:', combinedData);
     return combinedData;
   };
