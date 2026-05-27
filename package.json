@@ -1,0 +1,8 @@
+{
+  "name": "resume-builder-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "install": "cd Frontent && npm install",
+    "build": "cd Frontent && npm run build"
+  }
+}

@@ -6,10 +6,10 @@
             "use": "@vercel/node"
         },
         {
-            "src": "Frontent/package.json",
+            "src": "package.json",
             "use": "@vercel/static-build",
             "config": {
-                "distDir": "dist"
+                "distDir": "Frontent/dist"
             }
         }
     ],
