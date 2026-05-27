@@ -15,11 +15,10 @@
 
 ## 🔗 Live Links & Preview
 
-*   **Live Demo:** `[Insert Live Demo Link Here]` 🚀
-*   **Production API:** `[Insert Production API Link Here]` 🌐
+*   **Live Demo:** `https://resume-builder-official.vercel.app/` 🚀
+<!-- *   **Production API:** `[Insert Production API Link Here]` 🌐 -->
 
-### 🖥️ Application Screenshot
-`![App Screenshot](link)`
+
 
 ---
 
