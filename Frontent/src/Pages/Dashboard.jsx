@@ -392,131 +392,134 @@ ${profileData.projects?.map(proj =>
 
 
   
-  const combineRealDataWithAI = (realUserData, cvContent, companyName, roleName) => {
-    console.log('Real user data:', realUserData);
-    console.log('AI enhanced content:', cvContent);
-    
-    let combinedData = {
-      fullname: realUserData?.fullname || { firstname: "John", lastname: "Smith" },
-      profile: {
-        phone: realUserData?.profile?.phone || "+1-555-123-4567",
-        email: realUserData?.profile?.email || "user@email.com",
-        linkedIn: realUserData?.profile?.linkedIn || "linkedin.com/in/profile",
-        github: realUserData?.profile?.github || "github.com/username",
-        portfolio: realUserData?.profile?.portfolio || "",
-        summary: realUserData?.profile?.summary || ""
-      },
-      experience: realUserData?.experience || [],
-      education: realUserData?.education || [],
-      projects: realUserData?.projects || [],
-      certifications: realUserData?.certifications || [],
-      awards: realUserData?.awards || [],
-      volunteer: realUserData?.volunteer || [],
-      interests: realUserData?.interests || [],
-      skills: realUserData?.skills || { technical: [], soft: [], languages: [] }
+  /**
+   * Maps the structured AI JSON response (or falls back to real profile data)
+   * into the shape that ResumePreview expects.
+   *
+   * Priority for contact info: real DB user → AI JSON → empty string (NO dummies).
+   * Priority for sections:     AI JSON → real DB arrays → empty array.
+   */
+  const combineRealDataWithAI = (realUserData, aiImprovedCV, companyName, roleName) => {
+    console.log('combineRealDataWithAI — realUserData:', realUserData);
+    console.log('combineRealDataWithAI — aiImprovedCV type:', typeof aiImprovedCV);
+
+    // ── 1. Determine whether the AI returned a structured object or a raw string
+    const isStructured = aiImprovedCV && typeof aiImprovedCV === 'object';
+    const ai = isStructured ? aiImprovedCV : {};
+
+    // ── 2. Contact info: DB is authoritative; AI fills gaps; never dummy data
+    const dbProfile  = realUserData?.profile  || {};
+    const dbFullname = realUserData?.fullname  || {};
+
+    const firstname = dbFullname.firstname || ai.profile?.firstname || '';
+    const lastname  = dbFullname.lastname  || ai.profile?.lastname  || '';
+    const email     = dbProfile.email      || ai.profile?.email     || realUserData?.email || '';
+    const phone     = dbProfile.phone      || ai.profile?.phone     || '';
+    const linkedIn  = dbProfile.linkedIn   || ai.profile?.linkedin  || '';
+    const github    = dbProfile.github     || ai.profile?.github    || '';
+    const portfolio = dbProfile.portfolio  || '';
+
+    // ── 3. Summary / objective
+    const summary = ai.objective || dbProfile.summary || '';
+
+    // ── 4. Skills — AI returns typed groups; DB returns flat technical[]
+    //    Build a unified typed object.
+    const dbTech = realUserData?.skills?.technical || [];
+    const dbSoft = realUserData?.skills?.soft      || [];
+    const dbLang = realUserData?.skills?.languages || [];
+
+    const aiSkills = ai.skills || {};
+    const typedSkills = {
+      languages: aiSkills.languages?.length ? aiSkills.languages : dbLang,
+      frontend:  aiSkills.frontend?.length  ? aiSkills.frontend  : [],
+      backend:   aiSkills.backend?.length   ? aiSkills.backend   : [],
+      tools:     aiSkills.tools?.length     ? aiSkills.tools     : [],
+      soft:      aiSkills.soft?.length      ? aiSkills.soft      : dbSoft,
+      // Keep a flat `technical` array for legacy template compatibility
+      technical: [
+        ...(aiSkills.languages || []),
+        ...(aiSkills.frontend  || []),
+        ...(aiSkills.backend   || []),
+        ...(aiSkills.tools     || []),
+      ].filter(Boolean).length
+        ? [
+            ...(aiSkills.languages || []),
+            ...(aiSkills.frontend  || []),
+            ...(aiSkills.backend   || []),
+            ...(aiSkills.tools     || []),
+          ]
+        : dbTech,
     };
-    
-    const summaryMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROFESSIONAL SUMMARY|SUMMARY)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:SKILLS|WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
-    if (summaryMatch) {
-      combinedData.profile.summary = summaryMatch[1].trim().replace(/\n/g, ' ').replace(/\s+/g, ' ');
-    }
-    
-    const skillsMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|EDUCATION|PROJECTS)[*#\s]*(?:\n|$)|$)/i);
-    if (skillsMatch) {
-      const aiSkills = [];
-      const skillsText = skillsMatch[1];
-      
-      const skillParts = skillsText.split(/[,\n•\-:|()]/)
-        .map(skill => skill.trim())
-        .filter(skill => skill && 
-                skill.length > 2 && 
-                skill.length < 30 &&
-                !skill.match(/^(Technical|Skills?|Product|Process|Stack|Tools?)$/i));
-      
-      aiSkills.push(...skillParts);
-      
-      const existingTechSkills = combinedData.skills.technical || [];
-      const mergedTechSkills = [...new Set([...existingTechSkills, ...aiSkills])];
-      
-      combinedData.skills.technical = mergedTechSkills;
-    }
 
-    const expMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:WORK EXPERIENCE|EXPERIENCE|PROFESSIONAL EXPERIENCE)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|SKILLS)[*#\s]*(?:\n|$)|$)/i);
-    if (expMatch && expMatch[1].trim()) {
-      combinedData.experience = expMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
-        const lines = block.trim().split('\n');
-        const header = lines[0];
-        let position = '', company = '', date = '';
-        if (header.includes('**')) {
-          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
-          position = titleMatch ? titleMatch[1] : '';
-          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
-          company = rest[0] || '';
-          date = rest[1] || '';
-        }
-        return {
-          position: position || header.replace(/\*\*/g, '').trim(),
-          company,
-          startDate: date,
-          description: lines.slice(1).join('\n')
-        };
-      });
-    }
+    // ── 5. Experience
+    //    AI format: { title, duration, description }
+    //    DB format: { position, company, startDate, endDate, description }
+    //    Normalise to DB format for the templates.
+    const mapAIExp = (e) => ({
+      position:    e.title       || e.position || '',
+      company:     e.company     || '',
+      startDate:   e.duration    || e.startDate || '',
+      endDate:     e.endDate     || '',
+      description: e.description || '',
+      location:    e.location    || '',
+    });
 
-    const eduMatch = cvContent.match(/(?:\n|^)[*#\s]*EDUCATION[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:PROJECTS|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
-    if (eduMatch && eduMatch[1].trim()) {
-      combinedData.education = eduMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
-        const lines = block.trim().split('\n');
-        const header = lines[0];
-        let degree = '', institution = '', year = '';
-        if (header.includes('**')) {
-          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
-          degree = titleMatch ? titleMatch[1] : '';
-          const rest = header.replace(/\*\*([^*]+)\*\*/, '').split('|').map(s => s.replace(/[-|]/g, '').trim()).filter(Boolean);
-          institution = rest[0] || '';
-          year = rest[1] || '';
-        }
-        return {
-          degree: degree || header.replace(/\*\*/g, '').trim(),
-          institution,
-          year,
-        };
-      });
-    }
+    const experience = ai.experience?.length
+      ? ai.experience.map(mapAIExp)
+      : (realUserData?.experience || []);
 
-    const projMatch = cvContent.match(/(?:\n|^)[*#\s]*(?:PROJECTS|NOTABLE PROJECTS)[*#\s]*\n([\s\S]*?)(?=(?:\n|^)[*#\s]*(?:EDUCATION|CERTIFICATIONS|AWARDS|SKILLS|WORK EXPERIENCE|EXPERIENCE)[*#\s]*(?:\n|$)|$)/i);
-    if (projMatch && projMatch[1].trim()) {
-      combinedData.projects = projMatch[1].trim().split(/\n\s*\n/).filter(Boolean).map(block => {
-        const lines = block.trim().split('\n');
-        const header = lines[0];
-        let name = '';
-        if (header.includes('**')) {
-          const titleMatch = header.match(/\*\*([^*]+)\*\*/);
-          name = titleMatch ? titleMatch[1] : header;
-        }
-        return {
-          name: name || header.replace(/\*\*/g, '').trim(),
-          description: lines.slice(1).join('\n')
-        };
-      });
-    }
-    
-    if (!combinedData.fullname.firstname || combinedData.fullname.firstname === "John") {
-      const nameMatch = cvContent.match(/^([A-Z\s]+)/m);
-      if (nameMatch) {
-        const nameParts = nameMatch[1].replace(/AI-OPTIMIZED|CV FOR|Amazon|Microsoft|Google/g, '').trim().split(' ');
-        if (nameParts.length >= 2) {
-          combinedData.fullname.firstname = nameParts[0];
-          combinedData.fullname.lastname = nameParts.slice(1).join(' ');
-        }
-      }
-    }
-    
-    // ── Always attach the raw markdown so ResumePreview can render it
-    //    directly if the regex parsers above produced empty arrays.
-    combinedData._rawMarkdown = typeof cvContent === 'string' ? cvContent : '';
+    // ── 6. Education
+    //    AI format: { degree, institution, year, score }  → maps cleanly
+    const education = ai.education?.length
+      ? ai.education.map(e => ({
+          degree:      e.degree      || '',
+          institution: e.institution || '',
+          year:        e.year        || '',
+          gpa:         e.score       || e.gpa || '',
+          fieldOfStudy: e.fieldOfStudy || '',
+        }))
+      : (realUserData?.education || []);
 
-    console.log('Combined data for PDF:', combinedData);
+    // ── 7. Projects
+    //    AI format: { name, tech, description }
+    const mapAIProject = (p) => ({
+      title:       p.name  || p.title || '',
+      name:        p.name  || p.title || '',
+      description: p.description || '',
+      technologies: p.tech || p.technologies || '',
+    });
+
+    const projects = ai.projects?.length
+      ? ai.projects.map(mapAIProject)
+      : (realUserData?.projects || []);
+
+    // ── 8. Certifications
+    //    AI format: { name, issuer, year }
+    const certifications = ai.certifications?.length
+      ? ai.certifications.map(c => ({
+          name:      c.name   || '',
+          issuer:    c.issuer || '',
+          issueDate: c.year   || c.issueDate || '',
+        }))
+      : (realUserData?.certifications || []);
+
+    // ── 9. Assemble final payload
+    const combinedData = {
+      fullname: { firstname, lastname },
+      profile: { email, phone, linkedIn, github, portfolio, summary },
+      skills: typedSkills,
+      experience,
+      education,
+      projects,
+      certifications,
+      awards:     realUserData?.awards     || [],
+      volunteer:  realUserData?.volunteer  || [],
+      interests:  realUserData?.interests  || [],
+      // Attach raw markdown for the markdown fallback renderer (Mode B)
+      _rawMarkdown: isStructured ? '' : (typeof aiImprovedCV === 'string' ? aiImprovedCV : ''),
+    };
+
+    console.log('combineRealDataWithAI — output:', combinedData);
     return combinedData;
   };
 

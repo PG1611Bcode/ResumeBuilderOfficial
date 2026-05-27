@@ -6,120 +6,194 @@ const groq = new Groq({
 
 async function analyzeAndCustomizeCV(cvText, profileData, roleDetails) {
   try {
-    console.log('Calling Gemini API for CV analysis...');
+    console.log('Calling Groq API for CV analysis...');
 
-    // ✨ FIX: This prompt forces the AI to keep your links
-    const prompt = `You are an expert career consultant. Analyze this CV for the job role and create an optimized version.
+    // ── Build a safe contact block from the DB profile so the AI can reference it
+    const contactBlock = {
+      firstname:  profileData?.fullname?.firstname  || "",
+      lastname:   profileData?.fullname?.lastname   || "",
+      email:      profileData?.profile?.email       || profileData?.email || "",
+      phone:      profileData?.profile?.phone       || "",
+      linkedin:   profileData?.profile?.linkedIn    || "",
+      github:     profileData?.profile?.github      || "",
+    };
 
-CV: ${cvText}
-Profile: ${JSON.stringify(profileData)}
-Job: ${roleDetails.company} - ${roleDetails.role}
+    const prompt = `You are an expert career consultant and CV writer. Your task is to analyze the candidate's CV against the target role and return a fully structured, optimized CV in strict JSON format.
+
+=== CANDIDATE PROFILE (USE THIS DATA AS THE AUTHORITATIVE SOURCE FOR CONTACT INFO) ===
+Name: ${contactBlock.firstname} ${contactBlock.lastname}
+Email: ${contactBlock.email}
+Phone: ${contactBlock.phone}
+LinkedIn: ${contactBlock.linkedin}
+GitHub: ${contactBlock.github}
+
+=== UPLOADED CV TEXT ===
+${cvText}
+
+=== TARGET ROLE ===
+Company: ${roleDetails.company}
+Role: ${roleDetails.role}
 Required Skills: ${roleDetails.skills.join(', ')}
-Experience: ${roleDetails.experience} years
+Required Experience: ${roleDetails.experience} years
 
-⚠️ CRITICAL INSTRUCTIONS FOR HYPERLINKS:
-1. When you find URLs or hyperlinks in the CV (like LinkedIn, GitHub, Portfolio, LeetCode, personal websites, etc.), you MUST PRESERVE them.
-2. Keep hyperlinks in one of these formats:
-   - Markdown format: [LinkText](https://url.com)
-   - Or keep the full URL visible: https://url.com
-3. DO NOT remove any social media links, portfolio links, or contact URLs.
-4. If the original CV has "LinkedIn | GitHub | Portfolio", keep those with their URLs intact.
-5. All URLs and hyperlinks are essential contact information - NEVER remove them.
+=== INSTRUCTIONS ===
+1. Analyze the CV for strengths, weaknesses and skills match against the target role.
+2. Produce an improved, ATS-optimized version of the CV tailored to the target role.
+3. The "improvedCV" field MUST be a structured JSON object — NOT a string, NOT markdown, NOT plain text.
+4. Populate EVERY field. Use the candidate profile above for all contact info. Do NOT invent contact details.
+5. Skills MUST be split into distinct categories: languages, frontend, backend, tools, soft.
+6. Experience and projects descriptions should be bullet-point rich, achievement-focused sentences.
 
-Respond in JSON format:
+Return ONLY valid JSON matching this EXACT schema (no markdown fences, no extra keys outside this schema):
+
 {
   "analysis": {
-    "strengths": [
-      {
-        "point": "Short title (e.g., 'Strong React Experience')",
-        "detail": "Detailed explanation of why this is a strength for this specific role."
-      }
-    ],
-    "weaknesses": [
-      {
-        "point": "Short title (e.g., 'Missing Node.js Backend Skills')",
-        "detail": "Detailed explanation of why this missing skill or weakness hurts your chances.",
-        "actionableStep": "Specific, actionable step the user can take to fix this right now."
-      }
-    ],
-    "skillsMatch": ["list of matching skills"],
-    "missingSkills": ["list of missing skills"],
-    "overallScore": "a score out of 100"
+    "strengths": [ { "point": "string", "detail": "string" } ],
+    "weaknesses": [ { "point": "string", "detail": "string", "actionableStep": "string" } ],
+    "skillsMatch": ["list of matching skills from the CV"],
+    "missingSkills": ["list of skills required but not found in CV"],
+    "overallScore": "number 0-100 as string"
   },
-  "improvedCV": "the full, optimized CV text WITH ALL HYPERLINKS PRESERVED IN MARKDOWN [text](url) OR FULL URL FORMAT",
-  "changesMade": ["list of changes made"],
-  "recommendations": ["list of recommendations"]
+  "improvedCV": {
+    "profile": {
+      "firstname": "${contactBlock.firstname}",
+      "lastname": "${contactBlock.lastname}",
+      "email": "${contactBlock.email}",
+      "phone": "${contactBlock.phone}",
+      "linkedin": "${contactBlock.linkedin}",
+      "github": "${contactBlock.github}"
+    },
+    "objective": "2-4 sentence tailored professional summary targeting the role",
+    "skills": {
+      "languages": ["Programming languages only, e.g. Python, JavaScript, Java"],
+      "frontend": ["Frontend frameworks/libs e.g. React, Vue, Tailwind"],
+      "backend": ["Backend frameworks/services e.g. Node.js, Express, Django"],
+      "tools": ["DevOps, DBs, cloud, IDEs e.g. Docker, AWS, Git, MongoDB"],
+      "soft": ["Soft skills e.g. Leadership, Communication, Problem Solving"]
+    },
+    "experience": [
+      {
+        "title": "Job Title at Company Name",
+        "duration": "Month Year – Month Year",
+        "description": "Achievement-focused bullet points as a single string. Start each bullet with •. Include quantified results where possible."
+      }
+    ],
+    "education": [
+      {
+        "degree": "Degree name",
+        "institution": "University/College name",
+        "year": "Graduation year or date range",
+        "score": "GPA or percentage if mentioned, else empty string"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Project Name",
+        "tech": "Comma-separated tech stack",
+        "description": "What it does and your contribution"
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Certification name",
+        "issuer": "Issuing organisation",
+        "year": "Year obtained"
+      }
+    ]
+  },
+  "changesMade": ["list of changes made to optimize the CV"],
+  "recommendations": ["list of recommendations for the candidate"]
 }`;
 
-    // ✅ Using your original, working method call
     const response = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "llama-3.3-70b-versatile",
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
+      temperature: 0.3,   // lower = more deterministic / schema-faithful
     });
 
     const text = response.choices[0]?.message?.content || '';
-    console.log('Gemini API response received');
+    console.log('Groq API response received');
 
-    // ✅ Using your original, working cleaning logic
+    // Strip any accidental markdown fences
     let cleanedText = text.trim();
     if (cleanedText.startsWith('```json')) {
-      cleanedText = cleanedText.replace(/```json\s*/, '').replace(/```$/, '');
+      cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/```\s*$/, '');
     } else if (cleanedText.startsWith('```')) {
-      cleanedText = cleanedText.replace(/```\s*/, '').replace(/```$/, '');
+      cleanedText = cleanedText.replace(/^```\s*/, '').replace(/```\s*$/, '');
     }
 
     try {
       const parsedResult = JSON.parse(cleanedText);
+
+      // ── Safety: if the AI returned improvedCV as a string (old format), wrap it
+      if (typeof parsedResult.improvedCV === 'string') {
+        console.warn('AI returned improvedCV as a string — wrapping in structured object');
+        parsedResult._rawMarkdown = parsedResult.improvedCV;
+        parsedResult.improvedCV = buildFallbackImprovedCV(contactBlock, profileData, parsedResult._rawMarkdown);
+      }
+
       return parsedResult;
     } catch (parseError) {
-      console.log('JSON parsing failed, using fallback');
-      // This is the "fake" data you were seeing
-      return {
-        analysis: {
-          strengths: [
-            { point: "CV Processed", detail: "CV analyzed using Gemini AI" }
-          ],
-          weaknesses: [
-            { point: "Areas for improvement", detail: "Some areas for improvement identified", actionableStep: "Please try running the analysis again." }
-          ],
-          skillsMatch: roleDetails.skills.slice(0, 3),
-          missingSkills: roleDetails.skills.slice(3),
-          overallScore: "75"
-        },
-        improvedCV: `OPTIMIZED CV FOR ${roleDetails.company} - ${roleDetails.role}
-
-${cvText}
-
-ENHANCEMENTS:
-- Added relevant keywords for ${roleDetails.role}
-- Optimized for ${roleDetails.company}'s requirements
-- Improved professional summary
-- Enhanced skill presentation
-
-This CV has been optimized using Google Gemini AI.`,
-        changesMade: [
-          "Enhanced professional summary",
-          "Added missing technical skills",
-          "Optimized for ATS compatibility",
-          "Improved content structure"
-        ],
-        recommendations: [
-          `Focus on developing: ${roleDetails.skills.slice(-2).join(', ')}`,
-          `Highlight experience with: ${roleDetails.skills.slice(0, 2).join(', ')}`,
-          "Quantify achievements with metrics",
-          "Customize summary for each application"
-        ]
-      };
+      console.error('JSON parsing failed, using structured fallback. Parse error:', parseError.message);
+      return buildFullFallback(contactBlock, profileData, roleDetails, cvText);
     }
 
   } catch (error) {
-    console.error('Gemini AI Error:', error);
+    console.error('Groq AI Error:', error);
     throw new Error('AI analysis failed: ' + error.message);
   }
 }
 
-// ✅ This function is unchanged and uses your original, working code
+/** Builds a structured improvedCV object from real profile data when the AI returns a string */
+function buildFallbackImprovedCV(contactBlock, profileData, rawText) {
+  return {
+    profile: {
+      firstname: contactBlock.firstname,
+      lastname:  contactBlock.lastname,
+      email:     contactBlock.email,
+      phone:     contactBlock.phone,
+      linkedin:  contactBlock.linkedin,
+      github:    contactBlock.github,
+    },
+    objective: profileData?.profile?.summary || "",
+    skills: {
+      languages: profileData?.skills?.technical?.slice(0, 5) || [],
+      frontend:  [],
+      backend:   [],
+      tools:     profileData?.skills?.technical?.slice(5) || [],
+      soft:      profileData?.skills?.soft || [],
+    },
+    experience:     profileData?.experience     || [],
+    education:      profileData?.education      || [],
+    projects:       profileData?.projects       || [],
+    certifications: profileData?.certifications || [],
+    _rawMarkdown: rawText,
+  };
+}
+
+/** Full fallback when JSON.parse fails entirely */
+function buildFullFallback(contactBlock, profileData, roleDetails, cvText) {
+  return {
+    analysis: {
+      strengths: [{ point: "CV Processed", detail: "CV analyzed and structured from profile data." }],
+      weaknesses: [{ point: "Re-run Recommended", detail: "The AI response couldn't be parsed. Please try again.", actionableStep: "Re-submit the CV for analysis." }],
+      skillsMatch: roleDetails.skills.slice(0, 3),
+      missingSkills: roleDetails.skills.slice(3),
+      overallScore: "70"
+    },
+    improvedCV: buildFallbackImprovedCV(contactBlock, profileData, cvText),
+    changesMade: ["Structured from profile data due to AI parse error"],
+    recommendations: [
+      `Focus on developing: ${roleDetails.skills.slice(-2).join(', ')}`,
+      `Highlight experience with: ${roleDetails.skills.slice(0, 2).join(', ')}`,
+      "Quantify achievements with metrics",
+      "Customize summary for each application"
+    ]
+  };
+}
+
+// Unchanged utility function
 async function generateCVSuggestions(cvText, roleRequirements) {
   try {
     const prompt = `Analyze this CV and provide 5-7 improvement suggestions:
@@ -153,7 +227,7 @@ Respond as a numbered list.`;
     ];
 
   } catch (error) {
-    console.error('Gemini AI Suggestions Error:', error);
+    console.error('Groq AI Suggestions Error:', error);
     return [
       "Tailor CV to job requirements",
       "Highlight relevant experience",

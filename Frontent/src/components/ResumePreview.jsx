@@ -191,6 +191,66 @@ const GroupedSkillTags = ({ skills, tagStyle, labelColor }) => {
   return <div>{row('Core Technologies', core)}{row('Tools & Platforms', tools)}</div>;
 };
 
+/**
+ * TypedSkillsBlock – preferred renderer when the AI returns typed skill groups.
+ * Falls back to GroupedSkillTags (heuristic) when typed groups are empty.
+ */
+const TypedSkillsBlock = ({ typedGroups, techSkills, tagStyle, labelColor, textColor, mode = 'tags' }) => {
+  const lbl = {
+    fontSize: '10px', fontWeight: '700', textTransform: 'uppercase',
+    letterSpacing: '1px', color: labelColor || '#6b7280', marginBottom: '4px',
+  };
+
+  // Use typed groups when available
+  if (typedGroups && typedGroups.length > 0) {
+    return (
+      <div>
+        {typedGroups.map(({ label, items }) => (
+          <div key={label} style={{ marginBottom: '8px' }}>
+            <div style={lbl}>{label}</div>
+            {mode === 'grid' ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px 8px' }}>
+                {items.map((s, i) => (
+                  <div key={i} contentEditable suppressContentEditableWarning
+                    style={{ fontSize: '12px', color: textColor || '#374151', paddingLeft: '10px', position: 'relative', lineHeight: '1.6' }}>
+                    <span style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', fontSize: '8px' }}>▸</span>{s}
+                  </div>
+                ))}
+              </div>
+            ) : mode === 'dot' ? (
+              <p contentEditable suppressContentEditableWarning
+                style={{ fontSize: '12.5px', color: textColor || '#374151', lineHeight: '1.7', margin: 0, fontFamily: "'Inter',sans-serif" }}>
+                {items.join(' · ')}
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 5px' }}>
+                {items.map((s, i) => (
+                  <span key={i} contentEditable suppressContentEditableWarning style={tagStyle}>{s}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Fallback: heuristic grouper on flat technical array
+  if (mode === 'grid') return <SkillGrid skills={techSkills} textColor={textColor} />;
+  if (mode === 'dot') {
+    const { core, tools } = groupSkills(techSkills);
+    return (
+      <div>
+        {core.length > 0 && <p contentEditable suppressContentEditableWarning style={{ fontSize: '12.5px', color: textColor || '#374151', lineHeight: '1.7', margin: '0 0 4px', fontFamily: "'Inter',sans-serif" }}><strong style={{ color: '#111827' }}>Core:</strong> {core.join(' · ')}</p>}
+        {tools.length > 0 && <p contentEditable suppressContentEditableWarning style={{ fontSize: '12.5px', color: textColor || '#374151', lineHeight: '1.7', margin: 0, fontFamily: "'Inter',sans-serif" }}><strong style={{ color: '#111827' }}>Tools:</strong> {tools.join(' · ')}</p>}
+      </div>
+    );
+  }
+  return <GroupedSkillTags skills={techSkills} tagStyle={tagStyle} labelColor={labelColor} />;
+};
+
+
+
 /* ══════════════════════════════════════════════════════════════════════════════
    MARKDOWN FALLBACK RENDERER  (MODE B)
    Wraps the converted HTML in a styled <div> whose CSS variables match each
@@ -263,14 +323,29 @@ const ResumePreview = ({ data, template = 'classic' }) => {
   } = data;
 
   const name = `${fullname?.firstname || ''} ${fullname?.lastname || ''}`.trim();
+
+  // Flat legacy list (kept for heuristic groupSkills fallback)
   const techSkills = skills?.technical || [];
 
+  // Typed skill groups from the new AI JSON schema
+  const typedGroups = [
+    { label: 'Languages',        items: skills?.languages || [] },
+    { label: 'Frontend',         items: skills?.frontend  || [] },
+    { label: 'Backend',          items: skills?.backend   || [] },
+    { label: 'Tools & Platforms',items: skills?.tools     || [] },
+    { label: 'Soft Skills',      items: skills?.soft      || [] },
+  ].filter(g => g.items.length > 0);
+
+  // If typed groups are empty fall back to heuristic split of the flat list
+  const hasTypedGroups = typedGroups.length > 0;
+
   // Resolve email: DB profile sub-object first, then top-level auth email
-  const email     = profile?.email     || data?.email     || '';
-  const phone     = profile?.phone     || '';
-  const linkedIn  = profile?.linkedIn  || '';
-  const github    = profile?.github    || '';
-  const summary   = profile?.summary   || '';
+  const email    = profile?.email    || data?.email || '';
+  const phone    = profile?.phone    || '';
+  const linkedIn = profile?.linkedIn || '';
+  const github   = profile?.github   || '';
+  // Summary: AI sets profile.summary; objective is an alias used in new schema
+  const summary  = profile?.summary  || data?.objective || '';
 
   // ── Decide render mode ────────────────────────────────────────────────
   const useStructured = hasStructuredContent(data);
@@ -420,7 +495,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
         {summary && <div style={block}><SH>Professional Summary</SH><p contentEditable suppressContentEditableWarning style={{ fontSize: '13px', color: '#374151', lineHeight: '1.65', textAlign: 'justify', margin: '8px 0 0' }}>{summary}</p></div>}
 
         {/* Skills */}
-        {techSkills.length > 0 && <div style={block}><SH>Technical Skills</SH><div style={{ marginTop: '8px' }}><SkillGrid skills={techSkills} textColor="#374151" /></div></div>}
+        {(hasTypedGroups || techSkills.length > 0) && <div style={block}><SH>Skills</SH><div style={{ marginTop: '8px' }}><TypedSkillsBlock typedGroups={typedGroups} techSkills={techSkills} textColor="#374151" mode="grid" /></div></div>}
 
         {/* Experience */}
         {experience.length > 0 && (
@@ -542,7 +617,7 @@ const ResumePreview = ({ data, template = 'classic' }) => {
         <div style={{ padding: '28px 44px' }}>
           {summary && <div style={{ ...block, marginTop: 0 }}><SH>Professional Summary</SH><p contentEditable suppressContentEditableWarning style={{ fontSize: '13px', color: '#374151', lineHeight: '1.65', margin: '10px 0 0' }}>{summary}</p></div>}
 
-          {techSkills.length > 0 && <div style={block}><SH>Core Competencies</SH><div style={{ marginTop: '10px' }}><GroupedSkillTags skills={techSkills} tagStyle={tagS} labelColor="#6366f1" /></div></div>}
+          {(hasTypedGroups || techSkills.length > 0) && <div style={block}><SH>Core Competencies</SH><div style={{ marginTop: '10px' }}><TypedSkillsBlock typedGroups={typedGroups} techSkills={techSkills} tagStyle={tagS} labelColor="#6366f1" mode="tags" /></div></div>}
 
           {experience.length > 0 && (
             <div style={{ marginBottom: '18px' }}><SH>Work Experience</SH>
@@ -637,17 +712,10 @@ const ResumePreview = ({ data, template = 'classic' }) => {
               {github   && <a href={ensureHttps(github)}   target="_blank" rel="noopener noreferrer" style={{ color: accent, textDecoration: 'underline', wordBreak: 'break-all' }}>{stripProto(github)}</a>}
             </div>
           </div>
-          {techSkills.length > 0 && (
+          {(hasTypedGroups || techSkills.length > 0) && (
             <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '22px' }}>
               <SidebarSH title="Technical Skills" />
-              {[{ label: 'Core Tech', list: groupSkills(techSkills).core }, { label: 'Tools & Platforms', list: groupSkills(techSkills).tools }].map(({ label, list }) =>
-                list.length > 0 && (
-                  <div key={label} style={{ marginBottom: '8px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#64748b', marginBottom: '4px' }}>{label}</div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>{list.map((s, i) => <span key={i} contentEditable suppressContentEditableWarning style={chipS}>{s}</span>)}</div>
-                  </div>
-                )
-              )}
+              <TypedSkillsBlock typedGroups={typedGroups} techSkills={techSkills} tagStyle={chipS} labelColor="#64748b" mode="tags" />
             </div>
           )}
           {education.length > 0 && (
@@ -812,19 +880,10 @@ const ResumePreview = ({ data, template = 'classic' }) => {
           </div>
         )}
 
-        {techSkills.length > 0 && (
+        {(hasTypedGroups || techSkills.length > 0) && (
           <div style={block}><SH>Skills</SH>
             <div style={{ marginTop: '8px' }}>
-              {groupSkills(techSkills).core.length > 0 && (
-                <p contentEditable suppressContentEditableWarning style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.7', margin: '0 0 4px', fontFamily: "'Inter',sans-serif" }}>
-                  <strong style={{ color: '#111827' }}>Core:</strong> {groupSkills(techSkills).core.join(' · ')}
-                </p>
-              )}
-              {groupSkills(techSkills).tools.length > 0 && (
-                <p contentEditable suppressContentEditableWarning style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.7', margin: 0, fontFamily: "'Inter',sans-serif" }}>
-                  <strong style={{ color: '#111827' }}>Tools:</strong> {groupSkills(techSkills).tools.join(' · ')}
-                </p>
-              )}
+              <TypedSkillsBlock typedGroups={typedGroups} techSkills={techSkills} textColor="#374151" mode="dot" />
             </div>
           </div>
         )}
@@ -920,22 +979,17 @@ const ResumePreview = ({ data, template = 'classic' }) => {
 
         {/* Sidebar */}
         <div style={{ flex: '0 0 38%', padding: '24px 32px 24px 24px', backgroundColor: accentLight }}>
-          {techSkills.length > 0 && (
+          {(hasTypedGroups || techSkills.length > 0) && (
             <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '20px' }}>
               <SidebarSH>Technical Skills</SidebarSH>
               <div style={{ marginTop: '8px' }}>
-                {[{ label: 'Core Tech', list: groupSkills(techSkills).core }, { label: 'Tools & Platforms', list: groupSkills(techSkills).tools }].map(({ label, list }) =>
-                  list.length > 0 && (
-                    <div key={label} style={{ marginBottom: '8px' }}>
-                      <div style={{ fontSize: '9px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '4px' }}>{label}</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px 4px' }}>
-                        {list.map((s, i) => (
-                          <span key={i} contentEditable suppressContentEditableWarning style={{ fontSize: '10.5px', color: '#292524', backgroundColor: '#ffedd5', border: '1px solid #fed7aa', borderRadius: '3px', padding: '2px 6px', fontWeight: '500' }}>{s}</span>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                )}
+                <TypedSkillsBlock 
+                  typedGroups={typedGroups} 
+                  techSkills={techSkills} 
+                  tagStyle={{ fontSize: '10.5px', color: '#292524', backgroundColor: '#ffedd5', border: '1px solid #fed7aa', borderRadius: '3px', padding: '2px 6px', fontWeight: '500' }} 
+                  labelColor="#78716c" 
+                  mode="tags" 
+                />
               </div>
             </div>
           )}
