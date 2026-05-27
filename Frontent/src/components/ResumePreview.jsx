@@ -1,5 +1,74 @@
 import React from 'react';
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   ResumePreview – 5 fully-redesigned, industry-grade CV templates
+   Requirements met:
+   ✅ Compact horizontal skill-tag / inline-grid layout (no long bullet lists)
+   ✅ Explicit HEX text colours throughout (no invisible or low-contrast text)
+   ✅ break-inside-avoid on every Experience, Project & Education block
+   ✅ contentEditable preserved on every text node
+   ✅ Premium typography: structured headers with border-bottom accent rules
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Shared micro-components ─────────────────────────────────────────── */
+
+/** Renders a horizontal wrapping tag-cloud of skill pills */
+const SkillTags = ({ skills, tagStyle }) => {
+  if (!skills || skills.length === 0) return null;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px 6px' }}>
+      {skills.map((s, i) => (
+        <span key={i} contentEditable suppressContentEditableWarning style={tagStyle}>
+          {s}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+/** Renders skills in a 3-column dense inline grid */
+const SkillGrid = ({ skills, textColor }) => {
+  if (!skills || skills.length === 0) return null;
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '3px 8px',
+      }}
+    >
+      {skills.map((s, i) => (
+        <div
+          key={i}
+          contentEditable
+          suppressContentEditableWarning
+          style={{
+            fontSize: '12px',
+            color: textColor || '#374151',
+            paddingLeft: '10px',
+            position: 'relative',
+            lineHeight: '1.6',
+          }}
+        >
+          <span
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: textColor || '#374151',
+              fontSize: '8px',
+            }}
+          >
+            ▸
+          </span>
+          {s}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ResumePreview = ({ data, template = 'classic' }) => {
   if (!data) return null;
 
@@ -9,335 +78,877 @@ const ResumePreview = ({ data, template = 'classic' }) => {
     experience = [],
     education = [],
     projects = [],
-    skills = {}
+    skills = {},
   } = data;
 
   const name = `${fullname?.firstname || ''} ${fullname?.lastname || ''}`.trim();
+  const techSkills = skills?.technical || [];
 
-  // Helper to render contact info safely
-  const renderContact = () => {
-    return (
-      <div className="flex flex-wrap gap-4 text-[13px] opacity-90 mt-2">
-        {profile?.email && <div><span>✉️</span> {profile.email}</div>}
-        {profile?.phone && <div><span>📱</span> {profile.phone}</div>}
-        {profile?.linkedIn && <div><span>🔗</span> {profile.linkedIn.replace('https://', '')}</div>}
-        {profile?.github && <div><span>💻</span> {profile.github.replace('https://', '')}</div>}
-      </div>
-    );
-  };
-
-  // 1. Classic Professional
+  /* ══════════════════════════════════════════════════════════════════════════
+     1. CLASSIC PROFESSIONAL
+     Colour palette: navy #1e3a5f / slate text / subtle silver accents
+  ══════════════════════════════════════════════════════════════════════════ */
   if (template === 'classic') {
+    const accent = '#1e3a5f';
+    const rule = { borderBottom: `2px solid ${accent}`, marginBottom: '10px', paddingBottom: '4px' };
+    const sectionStyle = { marginBottom: '18px', pageBreakInside: 'avoid', breakInside: 'avoid' };
+    const SectionHeader = ({ children }) => (
+      <h2
+        style={{
+          ...rule,
+          fontSize: '12px',
+          fontWeight: '700',
+          color: accent,
+          textTransform: 'uppercase',
+          letterSpacing: '1.5px',
+          display: 'block',
+          width: '100%',
+        }}
+      >
+        {children}
+      </h2>
+    );
+
     return (
-      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#1a1a1a] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '40px' }}>
-        <div className="text-center mb-6 border-b-2 border-[#2c3e50] pb-4">
-          <h1 className="text-[28px] font-bold text-[#2c3e50] uppercase tracking-wider mb-2">{name}</h1>
-          <div className="flex justify-center gap-4 text-[13px] text-[#555555]">
-            {profile?.email && <span>{profile.email}</span>}
-            {profile?.phone && <span>{profile.phone}</span>}
-            {profile?.linkedIn && <span>{profile.linkedIn.replace('https://', '')}</span>}
+      <div
+        contentEditable
+        suppressContentEditableWarning
+        style={{
+          width: '794px',
+          minHeight: '1123px',
+          backgroundColor: '#ffffff',
+          fontFamily: "'Georgia', 'Times New Roman', serif",
+          color: '#1a1a2e',
+          padding: '44px 48px',
+          boxSizing: 'border-box',
+          outline: 'none',
+        }}
+      >
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '20px', borderBottom: `3px double ${accent}`, paddingBottom: '16px' }}>
+          <h1
+            contentEditable
+            suppressContentEditableWarning
+            style={{ fontSize: '28px', fontWeight: '700', color: accent, letterSpacing: '2px', textTransform: 'uppercase', margin: 0 }}
+          >
+            {name}
+          </h1>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '6px 18px',
+              marginTop: '8px',
+              fontSize: '12px',
+              color: '#4b5563',
+            }}
+          >
+            {profile?.email && (
+              <span contentEditable suppressContentEditableWarning>
+                {profile.email}
+              </span>
+            )}
+            {profile?.phone && (
+              <span contentEditable suppressContentEditableWarning>
+                {profile.phone}
+              </span>
+            )}
+            {profile?.linkedIn && (
+              <span contentEditable suppressContentEditableWarning>
+                {profile.linkedIn.replace('https://', '')}
+              </span>
+            )}
+            {profile?.github && (
+              <span contentEditable suppressContentEditableWarning>
+                {profile.github.replace('https://', '')}
+              </span>
+            )}
           </div>
         </div>
 
+        {/* Summary */}
         {profile?.summary && (
-          <div className="mb-5">
-            <h2 className="text-[16px] font-bold text-[#2c3e50] uppercase tracking-wide border-b-[1.5px] border-[#34495e] pb-1 mb-2">Professional Summary</h2>
-            <p className="text-[#333333] text-[13px] leading-relaxed text-justify">{profile.summary}</p>
+          <div style={sectionStyle}>
+            <SectionHeader>Professional Summary</SectionHeader>
+            <p
+              contentEditable
+              suppressContentEditableWarning
+              style={{ fontSize: '13px', color: '#374151', lineHeight: '1.65', textAlign: 'justify', margin: 0 }}
+            >
+              {profile.summary}
+            </p>
           </div>
         )}
 
-        {skills?.technical && skills.technical.length > 0 && (
-          <div className="mb-5">
-            <h2 className="text-[16px] font-bold text-[#2c3e50] uppercase tracking-wide border-b-[1.5px] border-[#34495e] pb-1 mb-2">Technical Skills</h2>
-            <ul className="list-disc pl-5 text-[13px] text-[#333333] columns-2">
-              {skills.technical.map((s, i) => <li key={i} className="mb-1">{s}</li>)}
-            </ul>
+        {/* Technical Skills — compact 3-col grid */}
+        {techSkills.length > 0 && (
+          <div style={sectionStyle}>
+            <SectionHeader>Technical Skills</SectionHeader>
+            <SkillGrid skills={techSkills} textColor="#374151" />
           </div>
         )}
 
-        {experience && experience.length > 0 && (
-          <div className="mb-5">
-            <h2 className="text-[16px] font-bold text-[#2c3e50] uppercase tracking-wide border-b-[1.5px] border-[#34495e] pb-1 mb-3">Professional Experience</h2>
-            <div className="space-y-4">
-              {experience.map((exp, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold text-[#2c3e50] text-[14px]">{exp.position}</h3>
-                    <span className="text-[13px] font-semibold text-[#555555]">
-                      {exp.startDate || exp.duration} {exp.endDate ? `- ${exp.endDate}` : ''}
-                    </span>
-                  </div>
-                  <div className="text-[13px] font-medium text-[#444444] mb-2 italic">
-                    {exp.company} {exp.location ? `| ${exp.location}` : ''}
-                  </div>
-                  {exp.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify whitespace-pre-wrap">{exp.description}</p>}
+        {/* Experience */}
+        {experience.length > 0 && (
+          <div style={{ marginBottom: '18px' }}>
+            <SectionHeader>Professional Experience</SectionHeader>
+            {experience.map((exp, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13.5px', color: '#111827', margin: 0 }}
+                  >
+                    {exp.position}
+                  </h3>
+                  <span
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12px', color: '#6b7280', fontStyle: 'italic', whiteSpace: 'nowrap', marginLeft: '8px' }}
+                  >
+                    {exp.startDate || exp.duration}
+                    {exp.endDate ? ` – ${exp.endDate}` : ''}
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {projects && projects.length > 0 && (
-          <div className="mb-5">
-            <h2 className="text-[16px] font-bold text-[#2c3e50] uppercase tracking-wide border-b-[1.5px] border-[#34495e] pb-1 mb-3">Projects</h2>
-            <div className="space-y-4">
-              {projects.map((proj, i) => (
-                <div key={i}>
-                  <h3 className="font-bold text-[#2c3e50] text-[14px]">{proj.name || proj.title}</h3>
-                  {proj.description && <p className="text-[13px] text-[#333333] leading-relaxed text-justify mt-1 whitespace-pre-wrap">{proj.description}</p>}
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontSize: '12.5px', color: '#4b5563', fontStyle: 'italic', marginBottom: '4px' }}
+                >
+                  {exp.company}
+                  {exp.location ? ` · ${exp.location}` : ''}
                 </div>
-              ))}
-            </div>
+                {exp.description && (
+                  <p
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.6', margin: 0, textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                  >
+                    {exp.description}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         )}
 
-        {education && education.length > 0 && (
-          <div className="mb-5">
-            <h2 className="text-[16px] font-bold text-[#2c3e50] uppercase tracking-wide border-b-[1.5px] border-[#34495e] pb-1 mb-3">Education</h2>
-            <div className="space-y-2">
-              {education.map((edu, i) => (
-                <div key={i} className="flex justify-between items-baseline">
-                  <div>
-                    <h3 className="font-bold text-[#2c3e50] text-[14px]">{edu.degree}</h3>
-                    <div className="text-[13px] text-[#444444]">{edu.institution}</div>
+        {/* Projects */}
+        {projects.length > 0 && (
+          <div style={{ marginBottom: '18px' }}>
+            <SectionHeader>Key Projects</SectionHeader>
+            {projects.map((proj, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '10px' }}>
+                <h3
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: '0 0 3px 0' }}
+                >
+                  {proj.name || proj.title}
+                </h3>
+                {proj.description && (
+                  <p
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.6', margin: 0, textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                  >
+                    {proj.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Education */}
+        {education.length > 0 && (
+          <div style={sectionStyle}>
+            <SectionHeader>Education</SectionHeader>
+            {education.map((edu, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+                <div>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: 0 }}
+                  >
+                    {edu.degree}
+                  </h3>
+                  <div contentEditable suppressContentEditableWarning style={{ fontSize: '12px', color: '#4b5563', fontStyle: 'italic' }}>
+                    {edu.institution}
                   </div>
-                  <span className="text-[13px] font-semibold text-[#555555]">{edu.year || edu.endDate || edu.startDate}</span>
                 </div>
-              ))}
-            </div>
+                <span
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontSize: '12px', color: '#6b7280', whiteSpace: 'nowrap', marginLeft: '8px' }}
+                >
+                  {edu.year || edu.endDate || edu.startDate}
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>
     );
   }
 
-  // 2. Modern Tech
+  /* ══════════════════════════════════════════════════════════════════════════
+     2. MODERN TECH
+     Two-tone: deep indigo sidebar-header gradient + crisp white body.
+     Skill pills with indigo tint, timeline dots for experience.
+  ══════════════════════════════════════════════════════════════════════════ */
   if (template === 'modern') {
-    return (
-      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2d3748] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
-        <div className="text-[#ffffff] px-[40px] py-[30px] mb-[20px]" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-          <h1 className="text-[32px] font-bold mb-2">{name}</h1>
-          {renderContact()}
-        </div>
+    const accent = '#4f46e5';
+    const accentLight = '#e0e7ff';
+    const sectionStyle = { marginBottom: '18px', pageBreakInside: 'avoid', breakInside: 'avoid' };
 
-        <div className="px-[40px] py-[10px]">
-          {profile?.summary && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-semibold text-[#667eea] mb-2 border-b-2 border-[#667eea] pb-1">Professional Summary</h2>
-              <p className="text-[13px] text-[#4a5568] leading-relaxed">{profile.summary}</p>
-            </div>
-          )}
-
-          {skills?.technical && skills.technical.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-semibold text-[#667eea] mb-2 border-b-2 border-[#667eea] pb-1">Core Competencies</h2>
-              <div className="flex flex-wrap gap-2">
-                {skills.technical.map((s, i) => (
-                  <span key={i} className="bg-[#edf2f7] text-[#4a5568] px-3 py-1 rounded-full text-[12px] font-medium border border-[#e2e8f0]">{s}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {experience && experience.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-semibold text-[#667eea] mb-3 border-b-2 border-[#667eea] pb-1">Experience</h2>
-              <div className="space-y-4">
-                {experience.map((exp, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between items-baseline mb-1">
-                      <h3 className="font-bold text-[#2d3748] text-[15px]">{exp.position}</h3>
-                      <span className="text-[13px] font-semibold text-[#718096] bg-[#edf2f7] px-2 py-0.5 rounded">
-                        {exp.startDate || exp.duration} {exp.endDate ? `- ${exp.endDate}` : ''}
-                      </span>
-                    </div>
-                    <div className="text-[13px] font-medium text-[#4a5568] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#4a5568] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {projects && projects.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-semibold text-[#667eea] mb-3 border-b-2 border-[#667eea] pb-1">Key Projects</h2>
-              <div className="space-y-4">
-                {projects.map((proj, i) => (
-                  <div key={i}>
-                    <h3 className="font-bold text-[#2d3748] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#4a5568] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {education && education.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-semibold text-[#667eea] mb-3 border-b-2 border-[#667eea] pb-1">Education</h2>
-              <div className="space-y-3">
-                {education.map((edu, i) => (
-                  <div key={i} className="flex justify-between items-baseline">
-                    <div>
-                      <h3 className="font-bold text-[#2d3748] text-[14px]">{edu.degree}</h3>
-                      <div className="text-[13px] text-[#4a5568]">{edu.institution}</div>
-                    </div>
-                    <span className="text-[13px] font-semibold text-[#718096]">{edu.year || edu.endDate || edu.startDate}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+    const SectionHeader = ({ children }) => (
+      <h2
+        style={{
+          fontSize: '11px',
+          fontWeight: '800',
+          color: accent,
+          textTransform: 'uppercase',
+          letterSpacing: '2px',
+          borderBottom: `2px solid ${accent}`,
+          paddingBottom: '5px',
+          marginBottom: '12px',
+        }}
+      >
+        {children}
+      </h2>
     );
-  }
 
-  // 3. Creative Portfolio
-  if (template === 'creative') {
+    const tagStyle = {
+      display: 'inline-block',
+      backgroundColor: accentLight,
+      color: accent,
+      borderRadius: '4px',
+      padding: '2px 9px',
+      fontSize: '11.5px',
+      fontWeight: '600',
+      border: `1px solid #c7d2fe`,
+    };
+
     return (
-      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2c2c2c] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
-        <div className="text-[#ffffff] px-[40px] py-[35px] mb-[25px] rounded-b-[20px]" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-          <h1 className="text-[36px] font-bold mb-2 drop-shadow-sm">{name}</h1>
-          {renderContact()}
-        </div>
-
-        <div className="px-[40px]">
-          {profile?.summary && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-bold text-[#f5576c] mb-2 border-b-2 border-[#f093fb] pb-1 inline-block w-full">About Me</h2>
-              <p className="text-[13px] text-[#444444] leading-relaxed">{profile.summary}</p>
-            </div>
-          )}
-
-          {skills?.technical && skills.technical.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-bold text-[#f5576c] mb-3 border-b-2 border-[#f093fb] pb-1 inline-block w-full">Skills & Expertise</h2>
-              <div className="flex flex-wrap gap-2">
-                {skills.technical.map((s, i) => (
-                  <span key={i} className="bg-[#fff0f2] text-[#f5576c] px-3 py-1 rounded-md text-[12px] font-bold border border-[#fca5a5]">{s}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {experience && experience.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-bold text-[#f5576c] mb-4 border-b-2 border-[#f093fb] pb-1 inline-block w-full">Experience</h2>
-              <div className="space-y-5">
-                {experience.map((exp, i) => (
-                  <div key={i} className="border-l-4 border-[#f093fb] pl-4">
-                    <div className="flex justify-between items-baseline mb-1">
-                      <h3 className="font-bold text-[#2c2c2c] text-[15px]">{exp.position}</h3>
-                      <span className="text-[12px] font-bold text-[#f5576c]">
-                        {exp.startDate || exp.duration} {exp.endDate ? `- ${exp.endDate}` : ''}
-                      </span>
-                    </div>
-                    <div className="text-[13px] font-medium text-[#666666] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#444444] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {projects && projects.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-bold text-[#f5576c] mb-4 border-b-2 border-[#f093fb] pb-1 inline-block w-full">Notable Projects</h2>
-              <div className="space-y-4">
-                {projects.map((proj, i) => (
-                  <div key={i} className="border-l-4 border-[#f5576c] pl-4">
-                    <h3 className="font-bold text-[#2c2c2c] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#444444] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {education && education.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[18px] font-bold text-[#f5576c] mb-3 border-b-2 border-[#f093fb] pb-1 inline-block w-full">Education</h2>
-              <div className="space-y-3">
-                {education.map((edu, i) => (
-                  <div key={i} className="flex justify-between items-baseline pl-4">
-                    <div>
-                      <h3 className="font-bold text-[#2c2c2c] text-[14px]">{edu.degree}</h3>
-                      <div className="text-[13px] text-[#666666]">{edu.institution}</div>
-                    </div>
-                    <span className="text-[12px] font-bold text-[#f5576c]">{edu.year || edu.endDate || edu.startDate}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // 4. Minimal Executive
-  if (template === 'minimal') {
-    return (
-      <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#2c2c2c] font-serif shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '50px' }}>
-        <div className="text-center mb-8 pb-6 border-b border-[#cccccc]">
-          <h1 className="text-[32px] font-normal text-[#1a1a1a] mb-3">{name}</h1>
-          <div className="flex justify-center gap-4 text-[12px] text-[#666666] font-sans">
-            {profile?.email && <span>{profile.email}</span>}
-            {profile?.phone && <span>{profile.phone}</span>}
-            {profile?.linkedIn && <span>{profile.linkedIn.replace('https://', '')}</span>}
+      <div
+        contentEditable
+        suppressContentEditableWarning
+        style={{
+          width: '794px',
+          minHeight: '1123px',
+          backgroundColor: '#ffffff',
+          fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+          color: '#1f2937',
+          boxSizing: 'border-box',
+          outline: 'none',
+        }}
+      >
+        {/* Header Banner */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #312e81 0%, #4f46e5 60%, #818cf8 100%)',
+            padding: '32px 44px 28px',
+            color: '#ffffff',
+          }}
+        >
+          <h1
+            contentEditable
+            suppressContentEditableWarning
+            style={{ fontSize: '30px', fontWeight: '800', margin: '0 0 6px 0', letterSpacing: '-0.5px' }}
+          >
+            {name}
+          </h1>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 20px', fontSize: '12.5px', opacity: 0.9 }}>
+            {profile?.email && <span contentEditable suppressContentEditableWarning>✉ {profile.email}</span>}
+            {profile?.phone && <span contentEditable suppressContentEditableWarning>📱 {profile.phone}</span>}
+            {profile?.linkedIn && <span contentEditable suppressContentEditableWarning>🔗 {profile.linkedIn.replace('https://', '')}</span>}
+            {profile?.github && <span contentEditable suppressContentEditableWarning>💻 {profile.github.replace('https://', '')}</span>}
           </div>
         </div>
 
-        {profile?.summary && (
-          <div className="mb-6">
-            <h2 className="text-[14px] font-bold text-[#1a1a1a] uppercase tracking-[2px] mb-3">Profile</h2>
-            <p className="text-[13px] text-[#444444] leading-[1.7] text-justify">{profile.summary}</p>
-          </div>
-        )}
+        {/* Body */}
+        <div style={{ padding: '28px 44px' }}>
+          {/* Summary */}
+          {profile?.summary && (
+            <div style={sectionStyle}>
+              <SectionHeader>Professional Summary</SectionHeader>
+              <p
+                contentEditable
+                suppressContentEditableWarning
+                style={{ fontSize: '13px', color: '#374151', lineHeight: '1.65', margin: 0 }}
+              >
+                {profile.summary}
+              </p>
+            </div>
+          )}
 
-        {experience && experience.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-[14px] font-bold text-[#1a1a1a] uppercase tracking-[2px] mb-4">Experience</h2>
-            <div className="space-y-5">
+          {/* Skills — pill tags */}
+          {techSkills.length > 0 && (
+            <div style={sectionStyle}>
+              <SectionHeader>Core Competencies</SectionHeader>
+              <SkillTags skills={techSkills} tagStyle={tagStyle} />
+            </div>
+          )}
+
+          {/* Experience */}
+          {experience.length > 0 && (
+            <div style={{ marginBottom: '18px' }}>
+              <SectionHeader>Work Experience</SectionHeader>
               {experience.map((exp, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold text-[#1a1a1a] text-[14px]">{exp.position} — <span className="font-normal italic">{exp.company}</span></h3>
-                    <span className="text-[12px] text-[#666666] font-sans">
-                      {exp.startDate || exp.duration} {exp.endDate ? `to ${exp.endDate}` : ''}
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '14px', paddingLeft: '14px', borderLeft: `3px solid ${accentLight}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <h3
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontWeight: '700', fontSize: '14px', color: '#111827', margin: 0 }}
+                    >
+                      {exp.position}
+                    </h3>
+                    <span
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{
+                        fontSize: '11px',
+                        color: accent,
+                        fontWeight: '600',
+                        backgroundColor: accentLight,
+                        padding: '1px 8px',
+                        borderRadius: '20px',
+                        whiteSpace: 'nowrap',
+                        marginLeft: '8px',
+                      }}
+                    >
+                      {exp.startDate || exp.duration}
+                      {exp.endDate ? ` – ${exp.endDate}` : ''}
                     </span>
                   </div>
-                  {exp.description && <p className="text-[13px] text-[#444444] leading-[1.7] text-justify mt-2 whitespace-pre-wrap">{exp.description}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {education && education.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-[14px] font-bold text-[#1a1a1a] uppercase tracking-[2px] mb-4">Education</h2>
-            <div className="space-y-3">
-              {education.map((edu, i) => (
-                <div key={i}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold text-[#1a1a1a] text-[14px]">{edu.degree}</h3>
-                    <span className="text-[12px] text-[#666666] font-sans">{edu.year || edu.endDate || edu.startDate}</span>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#6b7280', fontWeight: '600', marginBottom: '5px' }}
+                  >
+                    {exp.company}
+                    {exp.location ? ` · ${exp.location}` : ''}
                   </div>
-                  <div className="text-[13px] text-[#444444] italic">{edu.institution}</div>
+                  {exp.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {exp.description}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
+          )}
+
+          {/* Projects */}
+          {projects.length > 0 && (
+            <div style={{ marginBottom: '18px' }}>
+              <SectionHeader>Featured Projects</SectionHeader>
+              {projects.map((proj, i) => (
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '12px', paddingLeft: '14px', borderLeft: `3px solid ${accentLight}` }}>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: '0 0 3px 0' }}
+                  >
+                    {proj.name || proj.title}
+                  </h3>
+                  {proj.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {proj.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Education */}
+          {education.length > 0 && (
+            <div style={sectionStyle}>
+              <SectionHeader>Education</SectionHeader>
+              {education.map((edu, i) => (
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div>
+                    <h3
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: 0 }}
+                    >
+                      {edu.degree}
+                    </h3>
+                    <div contentEditable suppressContentEditableWarning style={{ fontSize: '12px', color: '#6b7280' }}>
+                      {edu.institution}
+                    </div>
+                  </div>
+                  <span
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '11px', color: accent, fontWeight: '600', whiteSpace: 'nowrap', marginLeft: '8px' }}
+                  >
+                    {edu.year || edu.endDate || edu.startDate}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     3. CREATIVE PORTFOLIO
+     Two-column layout: narrow slate sidebar (contact + skills) + white main.
+     Bold teal accent; skill chips with left-border glyph.
+  ══════════════════════════════════════════════════════════════════════════ */
+  if (template === 'creative') {
+    const accent = '#0d9488';       // teal-600
+    const sidebarBg = '#0f172a';    // slate-900
+    const sidebarText = '#e2e8f0';
+
+    const SidebarSection = ({ title, children }) => (
+      <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '22px' }}>
+        <h2
+          style={{
+            fontSize: '10px',
+            fontWeight: '800',
+            textTransform: 'uppercase',
+            letterSpacing: '2px',
+            color: accent,
+            borderBottom: `1px solid #1e293b`,
+            paddingBottom: '5px',
+            marginBottom: '10px',
+          }}
+        >
+          {title}
+        </h2>
+        {children}
+      </div>
+    );
+
+    const MainSection = ({ title, children }) => (
+      <div style={{ marginBottom: '18px' }}>
+        <h2
+          style={{
+            fontSize: '11px',
+            fontWeight: '800',
+            textTransform: 'uppercase',
+            letterSpacing: '1.5px',
+            color: accent,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: '4px',
+            marginBottom: '12px',
+          }}
+        >
+          {title}
+        </h2>
+        {children}
+      </div>
+    );
+
+    return (
+      <div
+        contentEditable
+        suppressContentEditableWarning
+        style={{
+          width: '794px',
+          minHeight: '1123px',
+          display: 'flex',
+          fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+          boxSizing: 'border-box',
+          outline: 'none',
+        }}
+      >
+        {/* ── Sidebar ── */}
+        <div
+          style={{
+            width: '240px',
+            backgroundColor: sidebarBg,
+            color: sidebarText,
+            padding: '36px 22px',
+            flexShrink: 0,
+          }}
+        >
+          {/* Name block */}
+          <div style={{ marginBottom: '28px' }}>
+            <h1
+              contentEditable
+              suppressContentEditableWarning
+              style={{ fontSize: '22px', fontWeight: '800', color: '#f8fafc', lineHeight: '1.2', margin: '0 0 6px 0' }}
+            >
+              {name}
+            </h1>
+            <div style={{ width: '32px', height: '3px', backgroundColor: accent, borderRadius: '2px' }} />
+          </div>
+
+          {/* Contact */}
+          <SidebarSection title="Contact">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11.5px', color: '#94a3b8' }}>
+              {profile?.email && <span contentEditable suppressContentEditableWarning>{profile.email}</span>}
+              {profile?.phone && <span contentEditable suppressContentEditableWarning>{profile.phone}</span>}
+              {profile?.linkedIn && <span contentEditable suppressContentEditableWarning>{profile.linkedIn.replace('https://', '')}</span>}
+              {profile?.github && <span contentEditable suppressContentEditableWarning>{profile.github.replace('https://', '')}</span>}
+            </div>
+          </SidebarSection>
+
+          {/* Skills */}
+          {techSkills.length > 0 && (
+            <SidebarSection title="Technical Skills">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {techSkills.map((s, i) => (
+                  <span
+                    key={i}
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{
+                      display: 'inline-block',
+                      backgroundColor: '#1e293b',
+                      color: '#e2e8f0',
+                      border: `1px solid #334155`,
+                      borderLeft: `3px solid ${accent}`,
+                      borderRadius: '3px',
+                      padding: '2px 7px',
+                      fontSize: '11px',
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </SidebarSection>
+          )}
+
+          {/* Education */}
+          {education.length > 0 && (
+            <SidebarSection title="Education">
+              {education.map((edu, i) => (
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '10px' }}>
+                  <div contentEditable suppressContentEditableWarning style={{ fontWeight: '700', fontSize: '12px', color: '#f1f5f9' }}>
+                    {edu.degree}
+                  </div>
+                  <div contentEditable suppressContentEditableWarning style={{ fontSize: '11px', color: '#94a3b8' }}>
+                    {edu.institution}
+                  </div>
+                  <div contentEditable suppressContentEditableWarning style={{ fontSize: '11px', color: accent }}>
+                    {edu.year || edu.endDate || edu.startDate}
+                  </div>
+                </div>
+              ))}
+            </SidebarSection>
+          )}
+        </div>
+
+        {/* ── Main Content ── */}
+        <div style={{ flex: 1, backgroundColor: '#ffffff', padding: '36px 32px', overflowWrap: 'break-word' }}>
+          {/* Summary */}
+          {profile?.summary && (
+            <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '22px' }}>
+              <MainSection title="Profile">
+                <p
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontSize: '13px', color: '#374151', lineHeight: '1.7', margin: 0 }}
+                >
+                  {profile.summary}
+                </p>
+              </MainSection>
+            </div>
+          )}
+
+          {/* Experience */}
+          {experience.length > 0 && (
+            <MainSection title="Work Experience">
+              {experience.map((exp, i) => (
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <h3
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontWeight: '700', fontSize: '14px', color: '#111827', margin: 0 }}
+                    >
+                      {exp.position}
+                    </h3>
+                    <span
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '11.5px', color: accent, fontWeight: '700', whiteSpace: 'nowrap', marginLeft: '8px' }}
+                    >
+                      {exp.startDate || exp.duration}
+                      {exp.endDate ? ` – ${exp.endDate}` : ''}
+                    </span>
+                  </div>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#6b7280', fontWeight: '600', marginBottom: '5px' }}
+                  >
+                    {exp.company}
+                    {exp.location ? ` · ${exp.location}` : ''}
+                  </div>
+                  {exp.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {exp.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </MainSection>
+          )}
+
+          {/* Projects */}
+          {projects.length > 0 && (
+            <MainSection title="Notable Projects">
+              {projects.map((proj, i) => (
+                <div
+                  key={i}
+                  style={{
+                    pageBreakInside: 'avoid',
+                    breakInside: 'avoid',
+                    marginBottom: '12px',
+                    borderLeft: `3px solid ${accent}`,
+                    paddingLeft: '10px',
+                  }}
+                >
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: '0 0 3px 0' }}
+                  >
+                    {proj.name || proj.title}
+                  </h3>
+                  {proj.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {proj.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </MainSection>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     4. MINIMAL EXECUTIVE
+     Pure white, serif font. Ultra-restrained palette: charcoal + warm grey.
+     Skills as bullet-separated inline list. No icons, no colour splashes.
+  ══════════════════════════════════════════════════════════════════════════ */
+  if (template === 'minimal') {
+    const headerLine = { borderBottom: '1px solid #d1d5db', paddingBottom: '4px', marginBottom: '10px' };
+    const sectionStyle = { marginBottom: '20px', pageBreakInside: 'avoid', breakInside: 'avoid' };
+
+    const SectionHeader = ({ children }) => (
+      <h2
+        style={{
+          ...headerLine,
+          fontSize: '10.5px',
+          fontWeight: '700',
+          color: '#111827',
+          textTransform: 'uppercase',
+          letterSpacing: '2.5px',
+        }}
+      >
+        {children}
+      </h2>
+    );
+
+    return (
+      <div
+        contentEditable
+        suppressContentEditableWarning
+        style={{
+          width: '794px',
+          minHeight: '1123px',
+          backgroundColor: '#ffffff',
+          fontFamily: "'Garamond', 'Georgia', 'Times New Roman', serif",
+          color: '#1a1a1a',
+          padding: '52px 56px',
+          boxSizing: 'border-box',
+          outline: 'none',
+        }}
+      >
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '28px', borderBottom: '1.5px solid #374151', paddingBottom: '18px' }}>
+          <h1
+            contentEditable
+            suppressContentEditableWarning
+            style={{ fontSize: '30px', fontWeight: '400', color: '#111827', letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 10px 0' }}
+          >
+            {name}
+          </h1>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '4px 14px',
+              fontSize: '11.5px',
+              color: '#6b7280',
+              fontFamily: "'Inter', 'Segoe UI', sans-serif",
+            }}
+          >
+            {profile?.email && <span contentEditable suppressContentEditableWarning>{profile.email}</span>}
+            {profile?.phone && <span contentEditable suppressContentEditableWarning>{profile.phone}</span>}
+            {profile?.linkedIn && <span contentEditable suppressContentEditableWarning>{profile.linkedIn.replace('https://', '')}</span>}
+            {profile?.github && <span contentEditable suppressContentEditableWarning>{profile.github.replace('https://', '')}</span>}
+          </div>
+        </div>
+
+        {/* Summary */}
+        {profile?.summary && (
+          <div style={sectionStyle}>
+            <SectionHeader>Profile</SectionHeader>
+            <p
+              contentEditable
+              suppressContentEditableWarning
+              style={{ fontSize: '13px', color: '#374151', lineHeight: '1.75', textAlign: 'justify', margin: 0 }}
+            >
+              {profile.summary}
+            </p>
           </div>
         )}
 
-        {skills?.technical && skills.technical.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-[14px] font-bold text-[#1a1a1a] uppercase tracking-[2px] mb-3">Skills</h2>
-            <p className="text-[13px] text-[#444444] leading-[1.7]">
-              {skills.technical.join(' • ')}
+        {/* Experience */}
+        {experience.length > 0 && (
+          <div style={{ marginBottom: '20px' }}>
+            <SectionHeader>Experience</SectionHeader>
+            {experience.map((exp, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{
+                      fontWeight: '700',
+                      fontSize: '13.5px',
+                      color: '#111827',
+                      margin: 0,
+                      fontFamily: "'Inter', sans-serif",
+                    }}
+                  >
+                    {exp.position}
+                    {exp.company ? (
+                      <span style={{ fontWeight: '400', fontStyle: 'italic', color: '#374151' }}>
+                        {' '}— {exp.company}
+                      </span>
+                    ) : null}
+                  </h3>
+                  <span
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '11.5px', color: '#6b7280', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', marginLeft: '8px' }}
+                  >
+                    {exp.startDate || exp.duration}
+                    {exp.endDate ? ` to ${exp.endDate}` : ''}
+                  </span>
+                </div>
+                {exp.description && (
+                  <p
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.7', margin: '4px 0 0 0', textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                  >
+                    {exp.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Education */}
+        {education.length > 0 && (
+          <div style={{ marginBottom: '20px' }}>
+            <SectionHeader>Education</SectionHeader>
+            {education.map((edu, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+                <div>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: 0, fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {edu.degree}
+                  </h3>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12px', color: '#4b5563', fontStyle: 'italic' }}
+                  >
+                    {edu.institution}
+                  </div>
+                </div>
+                <span
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontSize: '11.5px', color: '#6b7280', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap', marginLeft: '8px' }}
+                >
+                  {edu.year || edu.endDate || edu.startDate}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Projects */}
+        {projects.length > 0 && (
+          <div style={{ marginBottom: '20px' }}>
+            <SectionHeader>Selected Projects</SectionHeader>
+            {projects.map((proj, i) => (
+              <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '10px' }}>
+                <h3
+                  contentEditable
+                  suppressContentEditableWarning
+                  style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: '0 0 2px 0', fontFamily: "'Inter', sans-serif" }}
+                >
+                  {proj.name || proj.title}
+                </h3>
+                {proj.description && (
+                  <p
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.7', margin: 0, textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                  >
+                    {proj.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Skills — minimal dot-separated inline line */}
+        {techSkills.length > 0 && (
+          <div style={sectionStyle}>
+            <SectionHeader>Skills</SectionHeader>
+            <p
+              contentEditable
+              suppressContentEditableWarning
+              style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.7', margin: 0, fontFamily: "'Inter', sans-serif" }}
+            >
+              {techSkills.join(' · ')}
             </p>
           </div>
         )}
@@ -345,84 +956,275 @@ const ResumePreview = ({ data, template = 'classic' }) => {
     );
   }
 
-  // 5. Technical Expert
+  /* ══════════════════════════════════════════════════════════════════════════
+     5. TECHNICAL EXPERT  (default)
+     Two-column body: 62% main (experience + projects) / 38% sidebar
+     (skills grid + education). Burnt-orange accent. Dark navy header strip.
+  ══════════════════════════════════════════════════════════════════════════ */
+  const accent = '#c2410c';       // orange-700
+  const accentLight = '#fff7ed';  // orange-50
+  const headerBg = '#1c1917';     // stone-900
+
+  const MainSectionHeader = ({ children }) => (
+    <h2
+      style={{
+        fontSize: '11px',
+        fontWeight: '800',
+        color: accent,
+        textTransform: 'uppercase',
+        letterSpacing: '1.5px',
+        borderBottom: `2px solid ${accent}`,
+        paddingBottom: '4px',
+        marginBottom: '12px',
+      }}
+    >
+      {children}
+    </h2>
+  );
+
+  const SidebarSectionHeader = ({ children }) => (
+    <h2
+      style={{
+        fontSize: '10px',
+        fontWeight: '800',
+        color: accent,
+        textTransform: 'uppercase',
+        letterSpacing: '1.5px',
+        borderBottom: `1px solid #fed7aa`,
+        paddingBottom: '4px',
+        marginBottom: '10px',
+      }}
+    >
+      {children}
+    </h2>
+  );
+
   return (
-    <div contentEditable={true} suppressContentEditableWarning={true} className="bg-[#ffffff] w-full text-[#1f2937] font-sans shadow-lg mx-auto outline-none" style={{ width: '800px', minHeight: '1131px', padding: '0px' }}>
-      <div className="bg-[#ea580c] text-[#ffffff] px-[40px] py-[25px] border-b-4 border-[#c2410c]">
-        <h1 className="text-[28px] font-bold uppercase tracking-wider mb-2">{name}</h1>
-        {renderContact()}
+    <div
+      contentEditable
+      suppressContentEditableWarning
+      style={{
+        width: '794px',
+        minHeight: '1123px',
+        backgroundColor: '#ffffff',
+        fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+        color: '#1f2937',
+        boxSizing: 'border-box',
+        outline: 'none',
+      }}
+    >
+      {/* Header strip */}
+      <div
+        style={{
+          backgroundColor: headerBg,
+          color: '#ffffff',
+          padding: '28px 40px',
+        }}
+      >
+        <h1
+          contentEditable
+          suppressContentEditableWarning
+          style={{ fontSize: '26px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 8px 0', color: '#f5f5f4' }}
+        >
+          {name}
+        </h1>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 20px', fontSize: '12px', color: '#a8a29e' }}>
+          {profile?.email && <span contentEditable suppressContentEditableWarning>✉ {profile.email}</span>}
+          {profile?.phone && <span contentEditable suppressContentEditableWarning>📱 {profile.phone}</span>}
+          {profile?.linkedIn && <span contentEditable suppressContentEditableWarning>🔗 {profile.linkedIn.replace('https://', '')}</span>}
+          {profile?.github && <span contentEditable suppressContentEditableWarning>💻 {profile.github.replace('https://', '')}</span>}
+        </div>
       </div>
 
-      <div className="px-[40px] py-[20px] flex gap-[30px]">
-        {/* Left Column */}
-        <div className="w-[65%]">
+      {/* Two-column body */}
+      <div style={{ display: 'flex', gap: 0 }}>
+        {/* ── Main Column ── */}
+        <div style={{ flex: '1 1 62%', padding: '24px 28px 24px 40px', borderRight: '1px solid #e7e5e4' }}>
+          {/* Summary */}
           {profile?.summary && (
-            <div className="mb-6">
-              <h2 className="text-[16px] font-bold text-[#ea580c] uppercase tracking-wide border-b-2 border-[#ea580c] mb-3 inline-block">Professional Profile</h2>
-              <p className="text-[13px] text-[#374151] leading-relaxed text-justify">{profile.summary}</p>
+            <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '18px' }}>
+              <MainSectionHeader>Professional Profile</MainSectionHeader>
+              <p
+                contentEditable
+                suppressContentEditableWarning
+                style={{ fontSize: '12.5px', color: '#374151', lineHeight: '1.65', margin: 0, textAlign: 'justify' }}
+              >
+                {profile.summary}
+              </p>
             </div>
           )}
 
-          {experience && experience.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[16px] font-bold text-[#ea580c] uppercase tracking-wide border-b-2 border-[#ea580c] mb-4 inline-block">Work Experience</h2>
-              <div className="space-y-5">
-                {experience.map((exp, i) => (
-                  <div key={i} className="relative pl-4 border-l-2 border-[#fdba74]">
-                    <div className="absolute w-2 h-2 bg-[#ea580c] rounded-full -left-[5px] top-1.5"></div>
-                    <div className="flex justify-between items-baseline mb-1">
-                      <h3 className="font-bold text-[#111827] text-[14px]">{exp.position}</h3>
-                      <span className="text-[12px] font-bold text-[#ea580c]">
-                        {exp.startDate || exp.duration} {exp.endDate ? `- ${exp.endDate}` : ''}
-                      </span>
-                    </div>
-                    <div className="text-[13px] font-medium text-[#4b5563] mb-2">{exp.company}</div>
-                    {exp.description && <p className="text-[13px] text-[#374151] leading-relaxed whitespace-pre-wrap">{exp.description}</p>}
+          {/* Experience */}
+          {experience.length > 0 && (
+            <div style={{ marginBottom: '18px' }}>
+              <MainSectionHeader>Work Experience</MainSectionHeader>
+              {experience.map((exp, i) => (
+                <div
+                  key={i}
+                  style={{
+                    pageBreakInside: 'avoid',
+                    breakInside: 'avoid',
+                    marginBottom: '14px',
+                    paddingLeft: '12px',
+                    borderLeft: `3px solid #fed7aa`,
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '-5px',
+                      top: '5px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: accent,
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <h3
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontWeight: '700', fontSize: '13.5px', color: '#111827', margin: 0 }}
+                    >
+                      {exp.position}
+                    </h3>
+                    <span
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '11px', color: accent, fontWeight: '700', whiteSpace: 'nowrap', marginLeft: '8px' }}
+                    >
+                      {exp.startDate || exp.duration}
+                      {exp.endDate ? ` – ${exp.endDate}` : ''}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px' }}
+                  >
+                    {exp.company}
+                    {exp.location ? ` · ${exp.location}` : ''}
+                  </div>
+                  {exp.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {exp.description}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 
-          {projects && projects.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[16px] font-bold text-[#ea580c] uppercase tracking-wide border-b-2 border-[#ea580c] mb-4 inline-block">Technical Projects</h2>
-              <div className="space-y-4">
-                {projects.map((proj, i) => (
-                  <div key={i} className="relative pl-4 border-l-2 border-[#fdba74]">
-                    <div className="absolute w-2 h-2 bg-[#ea580c] rounded-full -left-[5px] top-1.5"></div>
-                    <h3 className="font-bold text-[#111827] text-[14px]">{proj.name || proj.title}</h3>
-                    {proj.description && <p className="text-[13px] text-[#374151] leading-relaxed mt-1 whitespace-pre-wrap">{proj.description}</p>}
-                  </div>
-                ))}
-              </div>
+          {/* Projects */}
+          {projects.length > 0 && (
+            <div style={{ marginBottom: '18px' }}>
+              <MainSectionHeader>Technical Projects</MainSectionHeader>
+              {projects.map((proj, i) => (
+                <div
+                  key={i}
+                  style={{
+                    pageBreakInside: 'avoid',
+                    breakInside: 'avoid',
+                    marginBottom: '12px',
+                    paddingLeft: '12px',
+                    borderLeft: `3px solid #fed7aa`,
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: '-5px',
+                      top: '5px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: accent,
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '13px', color: '#111827', margin: '0 0 3px 0' }}
+                  >
+                    {proj.name || proj.title}
+                  </h3>
+                  {proj.description && (
+                    <p
+                      contentEditable
+                      suppressContentEditableWarning
+                      style={{ fontSize: '12px', color: '#374151', lineHeight: '1.65', margin: 0, whiteSpace: 'pre-wrap' }}
+                    >
+                      {proj.description}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Right Column */}
-        <div className="w-[35%]">
-          {skills?.technical && skills.technical.length > 0 && (
-            <div className="mb-6 bg-[#fff7ed] p-4 rounded-lg border border-[#fed7aa]">
-              <h2 className="text-[14px] font-bold text-[#ea580c] uppercase tracking-wide border-b border-[#ea580c] pb-1 mb-3">Technical Skills</h2>
-              <ul className="list-square pl-4 text-[13px] text-[#374151] space-y-1">
-                {skills.technical.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
+        {/* ── Sidebar ── */}
+        <div style={{ flex: '0 0 38%', padding: '24px 32px 24px 24px', backgroundColor: accentLight }}>
+          {/* Skills — 3-col grid */}
+          {techSkills.length > 0 && (
+            <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '20px' }}>
+              <SidebarSectionHeader>Technical Skills</SidebarSectionHeader>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '4px 6px',
+                }}
+              >
+                {techSkills.map((s, i) => (
+                  <span
+                    key={i}
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{
+                      fontSize: '11px',
+                      color: '#292524',
+                      backgroundColor: '#ffedd5',
+                      border: '1px solid #fed7aa',
+                      borderRadius: '3px',
+                      padding: '2px 6px',
+                      fontWeight: '500',
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
-          {education && education.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-[14px] font-bold text-[#ea580c] uppercase tracking-wide border-b-2 border-[#ea580c] mb-3 inline-block">Education</h2>
-              <div className="space-y-4">
-                {education.map((edu, i) => (
-                  <div key={i}>
-                    <h3 className="font-bold text-[#111827] text-[13px] leading-tight mb-1">{edu.degree}</h3>
-                    <div className="text-[12px] text-[#4b5563] mb-1">{edu.institution}</div>
-                    <span className="text-[12px] font-bold text-[#ea580c]">{edu.year || edu.endDate || edu.startDate}</span>
+          {/* Education */}
+          {education.length > 0 && (
+            <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '20px' }}>
+              <SidebarSectionHeader>Education</SidebarSectionHeader>
+              {education.map((edu, i) => (
+                <div key={i} style={{ pageBreakInside: 'avoid', breakInside: 'avoid', marginBottom: '10px' }}>
+                  <h3
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ fontWeight: '700', fontSize: '12.5px', color: '#111827', margin: '0 0 2px 0', lineHeight: '1.3' }}
+                  >
+                    {edu.degree}
+                  </h3>
+                  <div contentEditable suppressContentEditableWarning style={{ fontSize: '11.5px', color: '#57534e' }}>
+                    {edu.institution}
                   </div>
-                ))}
-              </div>
+                  <div contentEditable suppressContentEditableWarning style={{ fontSize: '11px', color: accent, fontWeight: '700' }}>
+                    {edu.year || edu.endDate || edu.startDate}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
