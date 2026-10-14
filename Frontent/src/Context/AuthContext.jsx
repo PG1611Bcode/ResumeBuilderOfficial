@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
-import api from '../services/api';
+import api, { authAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
           document.cookie = `token=${token}; expires=${new Date(Date.now() + 24*60*60*1000).toUTCString()}; path=/`;
 
           // Sync with our backend to ensure user exists in MongoDB and get profile data
-          const response = await api.post('/users/sync', {}, {
+          const response = await authAPI.syncUser({}, {
             headers: { Authorization: `Bearer ${token}` }
           });
           

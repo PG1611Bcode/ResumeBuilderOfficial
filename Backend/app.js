@@ -92,6 +92,19 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/role', roleRoutes);
 app.use('/api/pdf', pdfRoutes);
 
+// Top-level aliases to handle direct calls without prefix
+app.use('/sync', (req, res, next) => {
+  userRoutes(req, res, next);
+});
+app.use('/login', (req, res, next) => {
+  req.url = '/login';
+  authRoutes(req, res, next);
+});
+app.use('/register', (req, res, next) => {
+  req.url = '/register';
+  authRoutes(req, res, next);
+});
+
 // Global 404 handler for API routes
 app.use((req, res, next) => {
   res.status(404).json({

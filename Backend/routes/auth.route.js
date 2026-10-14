@@ -11,6 +11,8 @@ const OTP = require('../models/otp.model');
 const { createAndSendOTP, verifyOTP } = require('../services/email.service');
 const connectDB = require('../db/db');
 
+const userController = require('../controllers/user.controller');
+
 // Ensure DB is connected before any auth query executes
 router.use(async (req, res, next) => {
   try {
@@ -21,6 +23,9 @@ router.use(async (req, res, next) => {
     res.status(500).json({ success: false, message: 'Database connection failed', error: err.message });
   }
 });
+
+// Sync user from Firebase to MongoDB (alias)
+router.post('/sync', userController.syncUser);
 
 // ✅ ADD: Authentication middleware
 const authenticateToken = (req, res, next) => {

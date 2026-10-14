@@ -15,7 +15,12 @@ module.exports.syncUser = async (req, res) => {
             return res.status(500).json({ message: 'Firebase Admin not initialized' });
         }
         
-        let user = await userModel.findOne({ firebaseUid: decodedToken.uid });
+        let user = await userModel.findOne({ 
+            $or: [
+                { firebaseUid: decodedToken.uid },
+                ...(decodedToken.email ? [{ email: decodedToken.email }] : [])
+            ]
+        });
         if (!user) {
             // Create user
             user = await userModel.create({
@@ -26,6 +31,9 @@ module.exports.syncUser = async (req, res) => {
                     lastname: decodedToken.name?.split(' ').slice(1).join(' ') || ''
                 }
             });
+        } else if (!user.firebaseUid) {
+            user.firebaseUid = decodedToken.uid;
+            await user.save();
         }
 
         // Return user data

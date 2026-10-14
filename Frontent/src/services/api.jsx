@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
-const API_BASE_URL = rawBaseUrl.replace(/\/$/, '');
+const API_BASE_URL = rawBaseUrl ? rawBaseUrl.replace(/\/$/, '') : '';
 
 const api = axios.create({
-  baseURL: API_BASE_URL || undefined,
+  baseURL: API_BASE_URL || '',
   withCredentials: true,
 });
 
@@ -36,6 +36,10 @@ const removeToken = () => {
 
 // Add token to requests from both localStorage and cookies
 api.interceptors.request.use((config) => {
+  // Ensure the request URL is root-relative if no absolute baseURL is used
+  if ((!config.baseURL || config.baseURL === '/') && config.url && !config.url.startsWith('/') && !config.url.startsWith('http')) {
+    config.url = '/' + config.url;
+  }
   const token = getTokenFromStorage();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -65,8 +69,14 @@ api.interceptors.response.use(
 export const authAPI = {
   register: (userData) => api.post('/users/register', userData),
   login: (credentials) => api.post('/users/login', credentials),
+  syncUser: (userData = {}, config = {}) => api.post('/users/sync', userData, config),
   googleAuth: () => `${API_BASE_URL}/users/auth/google`,
   githubAuth: () => `${API_BASE_URL}/users/auth/github`,
+  verifyEmail: (data) => api.post('/auth/verify-email', data),
+  verifyResetOTP: (data) => api.post('/auth/verify-reset-otp', data),
+  forgotPassword: (data) => api.post('/auth/forgot-password', data),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
+  resendOTP: (data) => api.post('/auth/resend-otp', data),
 };
 
 export const profileAPI = {
