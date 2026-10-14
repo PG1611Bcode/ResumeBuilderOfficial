@@ -1,0 +1,969 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "file_path": "Backend/app.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "dotenv",
+        "cors",
+        "express",
+        "cookie-parser",
+        "./routes/user.route",
+        "./db/db",
+        "./config/firebase"
+      ],
+      "summary": "Initialize Firebase Admin globally so middleware can use it",
+      "id": "Backend/app.js"
+    },
+    {
+      "file_path": "Backend/delete-users.js",
+      "language": "javascript",
+      "functions": [
+        "deleteAllUsers"
+      ],
+      "classes": [],
+      "imports": [
+        "mongoose",
+        "dotenv"
+      ],
+      "summary": "Connect to MongoDB",
+      "id": "Backend/delete-users.js"
+    },
+    {
+      "file_path": "Backend/server.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "http",
+        "./app"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/server.js"
+    },
+    {
+      "file_path": "Backend/config/firebase.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "firebase-admin",
+        "fs",
+        "path"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/config/firebase.js"
+    },
+    {
+      "file_path": "Backend/config/passport.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "passport",
+        "passport-google-oauth20",
+        "passport-github2",
+        "../models/user.model",
+        "../services/user.service"
+      ],
+      "summary": "Serialize user to session",
+      "id": "Backend/config/passport.js"
+    },
+    {
+      "file_path": "Backend/controllers/user.controller.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "../models/user.model",
+        "../config/firebase"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/controllers/user.controller.js"
+    },
+    {
+      "file_path": "Backend/db/db.js",
+      "language": "javascript",
+      "functions": [
+        "connectToDb"
+      ],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/db/db.js"
+    },
+    {
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "../config/firebase",
+        "../models/user.model"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "file_path": "Backend/models/courseRecommendation.model.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/models/courseRecommendation.model.js"
+    },
+    {
+      "file_path": "Backend/models/coverLetter.model.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/models/coverLetter.model.js"
+    },
+    {
+      "file_path": "Backend/models/cvHistory.model.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/models/cvHistory.model.js"
+    },
+    {
+      "file_path": "Backend/models/otp.model.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "backend/models/otp.model.js",
+      "id": "Backend/models/otp.model.js"
+    },
+    {
+      "file_path": "Backend/models/user.model.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "mongoose"
+      ],
+      "summary": "Removed jsonwebtoken and bcrypt",
+      "id": "Backend/models/user.model.js"
+    },
+    {
+      "file_path": "Backend/routes/auth.route.js",
+      "language": "javascript",
+      "functions": [
+        "authenticateToken",
+        "validatePasswordStrength"
+      ],
+      "classes": [],
+      "imports": [
+        "express",
+        "bcrypt",
+        "jsonwebtoken",
+        "nodemailer",
+        "passport",
+        "../models/user.model",
+        "../models/otp.model",
+        "../services/email.service"
+      ],
+      "summary": "backend/routes/auth.route.js",
+      "id": "Backend/routes/auth.route.js"
+    },
+    {
+      "file_path": "Backend/routes/coverLetter.route.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "express",
+        "../models/coverLetter.model",
+        "../services/coverLetter.service",
+        "../middleware/auth.middleware",
+        "pdfkit"
+      ],
+      "summary": "Generate a new cover letter",
+      "id": "Backend/routes/coverLetter.route.js"
+    },
+    {
+      "file_path": "Backend/routes/cv.route.js",
+      "language": "javascript",
+      "functions": [
+        "calculateMatchScore",
+        "parseCV"
+      ],
+      "classes": [],
+      "imports": [
+        "express",
+        "multer",
+        "pdf-parse",
+        "mammoth",
+        "puppeteer",
+        "../services/role.service",
+        "../services/ai.service",
+        "../models/cvHistory.model",
+        "../middleware/auth.middleware"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/routes/cv.route.js"
+    },
+    {
+      "file_path": "Backend/routes/cvHistory.route.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "express",
+        "../models/cvHistory.model",
+        "../middleware/auth.middleware"
+      ],
+      "summary": "This route is not actively used but kept for potential future use",
+      "id": "Backend/routes/cvHistory.route.js"
+    },
+    {
+      "file_path": "Backend/routes/learning.route.js",
+      "language": "javascript",
+      "functions": [
+        "normalizeDifficulty"
+      ],
+      "classes": [],
+      "imports": [
+        "express",
+        "../middleware/auth.middleware",
+        "../models/courseRecommendation.model",
+        "@google/genai"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/routes/learning.route.js"
+    },
+    {
+      "file_path": "Backend/routes/pdf.route.js",
+      "language": "javascript",
+      "functions": [
+        "generatePdfAsBuffer",
+        "markdownToHtml",
+        "parseAndCleanResumeContent",
+        "getSectionType",
+        "formatContentWithBullets",
+        "generateProfessionalHTML",
+        "generateClassicTemplate",
+        "generateModernTemplate",
+        "generateCreativeTemplate",
+        "generateMinimalTemplate",
+        "generateTechnicalTemplate",
+        "generateAnalyzedCVHTML"
+      ],
+      "classes": [],
+      "imports": [
+        "express",
+        "puppeteer",
+        "../middleware/auth.middleware",
+        "../services/email.service"
+      ],
+      "summary": "========================================================",
+      "id": "Backend/routes/pdf.route.js"
+    },
+    {
+      "file_path": "Backend/routes/role.route.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "express",
+        "../services/role.service"
+      ],
+      "summary": "Get role requirements for specific company and role",
+      "id": "Backend/routes/role.route.js"
+    },
+    {
+      "file_path": "Backend/routes/user.route.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "express",
+        "../controllers/user.controller",
+        "../middleware/auth.middleware"
+      ],
+      "summary": "Sync user from Firebase to MongoDB",
+      "id": "Backend/routes/user.route.js"
+    },
+    {
+      "file_path": "Backend/services/ai.service.js",
+      "language": "javascript",
+      "functions": [
+        "analyzeAndCustomizeCV",
+        "generateCVSuggestions"
+      ],
+      "classes": [],
+      "imports": [
+        "@google/genai"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/services/ai.service.js"
+    },
+    {
+      "file_path": "Backend/services/coverLetter.service.js",
+      "language": "javascript",
+      "functions": [
+        "generateCoverLetter",
+        "buildPrompt",
+        "regenerateCoverLetter"
+      ],
+      "classes": [],
+      "imports": [
+        "@google/genai"
+      ],
+      "summary": "Generate a professional cover letter using AI",
+      "id": "Backend/services/coverLetter.service.js"
+    },
+    {
+      "file_path": "Backend/services/email.service.js",
+      "language": "javascript",
+      "functions": [
+        "createTransporter",
+        "createAndSendOTP",
+        "verifyOTP",
+        "sendCvEmail"
+      ],
+      "classes": [],
+      "imports": [
+        "nodemailer",
+        "../models/otp.model"
+      ],
+      "summary": "\u2705 FIXED: createTransport (not createTransporter)",
+      "id": "Backend/services/email.service.js"
+    },
+    {
+      "file_path": "Backend/services/pdf.service.js",
+      "language": "javascript",
+      "functions": [
+        "extractTextFromPDF"
+      ],
+      "classes": [],
+      "imports": [
+        "pdf-parse"
+      ],
+      "summary": "Extract text from PDF - TEXT-BASED PDFs ONLY",
+      "id": "Backend/services/pdf.service.js"
+    },
+    {
+      "file_path": "Backend/services/role.service.js",
+      "language": "javascript",
+      "functions": [
+        "getRoleRequirements",
+        "getAllCompanies"
+      ],
+      "classes": [],
+      "imports": [],
+      "summary": "Javascript source file",
+      "id": "Backend/services/role.service.js"
+    },
+    {
+      "file_path": "Backend/services/user.service.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "../models/user.model"
+      ],
+      "summary": "Javascript source file",
+      "id": "Backend/services/user.service.js"
+    },
+    {
+      "file_path": "Frontent/eslint.config.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "js",
+        "globals",
+        "reactHooks",
+        "reactRefresh"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/eslint.config.js"
+    },
+    {
+      "file_path": "Frontent/vite.config.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "react",
+        "tailwindcss"
+      ],
+      "summary": "https://vite.dev/config/",
+      "id": "Frontent/vite.config.js"
+    },
+    {
+      "file_path": "Frontent/src/App.jsx",
+      "language": "javascript",
+      "functions": [
+        "Dashboard",
+        "App"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "Navbar",
+        "ProtectedRoute",
+        "Home",
+        "Register",
+        "Login",
+        "Profile"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/App.jsx"
+    },
+    {
+      "file_path": "Frontent/src/firebase.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/firebase.js"
+    },
+    {
+      "file_path": "Frontent/src/main.jsx",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        "App"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/main.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/CoverLetterGenerator.jsx",
+      "language": "javascript",
+      "functions": [
+        "CoverLetterGenerator",
+        "handleCVUpload",
+        "handleGenerate",
+        "handleRegenerate",
+        "handleDownload",
+        "handleUserInfoChange"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "Select",
+        "api",
+        "companyData"
+      ],
+      "summary": "State management",
+      "id": "Frontent/src/components/CoverLetterGenerator.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/cvTemplates.js",
+      "language": "javascript",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "summary": "src/components/cvTemplates.js",
+      "id": "Frontent/src/components/cvTemplates.js"
+    },
+    {
+      "file_path": "Frontent/src/components/DeleteAccount.jsx",
+      "language": "javascript",
+      "functions": [
+        "DeleteAccount",
+        "handleDeleteAccount"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/components/DeleteAccount.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/EmailVerification.jsx",
+      "language": "javascript",
+      "functions": [
+        "OTPVerification",
+        "handleOtpChange",
+        "handleKeyDown",
+        "handleResendOtp",
+        "formatTime"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/components/EmailVerification.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/ForgotPassword.jsx",
+      "language": "javascript",
+      "functions": [
+        "ForgotPassword",
+        "validatePassword",
+        "handleSendOtp",
+        "handleOtpSuccess",
+        "handlePasswordReset",
+        "handleBackToEmail"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api",
+        "PasswordResetVerification"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/components/ForgotPassword.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/Navbar.jsx",
+      "language": "javascript",
+      "functions": [
+        "Navbar",
+        "handleLogout"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "ThemeToggle"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/components/Navbar.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/OAuthButtons.jsx",
+      "language": "javascript",
+      "functions": [
+        "OAuthButtons",
+        "handleGoogleAuth",
+        "handleGithubAuth"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/components/OAuthButtons.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/PasswordResetVerification.jsx",
+      "language": "javascript",
+      "functions": [
+        "PasswordResetVerification",
+        "formatTime",
+        "handleOtpChange",
+        "handleKeyDown",
+        "validatePassword",
+        "handleResetPassword",
+        "handleResendCode"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "src/components/PasswordResetVerification.jsx",
+      "id": "Frontent/src/components/PasswordResetVerification.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/ProfileNotification.jsx",
+      "language": "javascript",
+      "functions": [
+        "ProfileNotification"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "frontend/src/components/ProfileNotification.jsx",
+      "id": "Frontent/src/components/ProfileNotification.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/ProtectedRoute.jsx",
+      "language": "javascript",
+      "functions": [
+        "ProtectedRoute"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "console.log('ProtectedRoute - Loading:', loading, 'User:', !!user);",
+      "id": "Frontent/src/components/ProtectedRoute.jsx"
+    },
+    {
+      "file_path": "Frontent/src/components/ThemeToggle.jsx",
+      "language": "javascript",
+      "functions": [
+        "ThemeToggle"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "Check local storage or system preference",
+      "id": "Frontent/src/components/ThemeToggle.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Context/AuthContext.jsx",
+      "language": "javascript",
+      "functions": [
+        "useAuth",
+        "AuthProvider",
+        "logout"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Context/AuthContext.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/CVHistoryDetail.jsx",
+      "language": "javascript",
+      "functions": [
+        "CVHistoryDetail",
+        "fetchCourseRecommendations",
+        "fetchCVData",
+        "generateProfessionalPDF",
+        "handleSendEmail",
+        "EmailCVModal"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "src/Pages/CVHistoryDetail.jsx",
+      "id": "Frontent/src/Pages/CVHistoryDetail.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/Dashboard.jsx",
+      "language": "javascript",
+      "functions": [
+        "Dashboard",
+        "loadDashboardData",
+        "handleLogout"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/Dashboard.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/History.jsx",
+      "language": "javascript",
+      "functions": [
+        "History",
+        "fetchCVHistory",
+        "fetchCoverLetterHistory",
+        "handleDownloadCV",
+        "handleDownloadCoverLetter",
+        "handleDelete"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/History.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/Home.jsx",
+      "language": "javascript",
+      "functions": [
+        "Home"
+      ],
+      "classes": [],
+      "imports": [
+        "React"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/Home.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/Login.jsx",
+      "language": "javascript",
+      "functions": [
+        "Login",
+        "handleChange",
+        "validateForm",
+        "handleSubmit"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "OAuthButtons"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/Login.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/OTPVerification.jsx",
+      "language": "javascript",
+      "functions": [
+        "OTPVerification",
+        "handleSuccess",
+        "handleBack"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "OTPVerificationComponent"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/OTPVerification.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/Profile.jsx",
+      "language": "javascript",
+      "functions": [
+        "Profile",
+        "loadProfile",
+        "handleInputChange",
+        "handleSkillsChange",
+        "handleSkillsBlur",
+        "addArrayItem",
+        "removeArrayItem",
+        "getEmptyItem",
+        "handleSave",
+        "handleSkip"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "api"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/Profile.jsx"
+    },
+    {
+      "file_path": "Frontent/src/Pages/Register.jsx",
+      "language": "javascript",
+      "functions": [
+        "Register",
+        "handleChange",
+        "validateForm",
+        "handleSubmit"
+      ],
+      "classes": [],
+      "imports": [
+        "React",
+        "OAuthButtons"
+      ],
+      "summary": "Javascript source file",
+      "id": "Frontent/src/Pages/Register.jsx"
+    },
+    {
+      "file_path": "Frontent/src/services/api.jsx",
+      "language": "javascript",
+      "functions": [
+        "getTokenFromStorage",
+        "removeToken"
+      ],
+      "classes": [],
+      "imports": [
+        "axios"
+      ],
+      "summary": "Helper function to get token from both sources",
+      "id": "Frontent/src/services/api.jsx"
+    }
+  ],
+  "edges": [
+    {
+      "raw_import": "./routes/user.route",
+      "source": "Backend/app.js",
+      "target": "Backend/routes/user.route.js"
+    },
+    {
+      "raw_import": "./db/db",
+      "source": "Backend/app.js",
+      "target": "Backend/db/db.js"
+    },
+    {
+      "raw_import": "./config/firebase",
+      "source": "Backend/app.js",
+      "target": "Backend/config/firebase.js"
+    },
+    {
+      "raw_import": "./app",
+      "source": "Backend/server.js",
+      "target": "Backend/app.js"
+    },
+    {
+      "raw_import": "../models/user.model",
+      "source": "Backend/config/passport.js",
+      "target": "Backend/models/user.model.js"
+    },
+    {
+      "raw_import": "../services/user.service",
+      "source": "Backend/config/passport.js",
+      "target": "Backend/services/user.service.js"
+    },
+    {
+      "raw_import": "../models/user.model",
+      "source": "Backend/controllers/user.controller.js",
+      "target": "Backend/models/user.model.js"
+    },
+    {
+      "raw_import": "../config/firebase",
+      "source": "Backend/controllers/user.controller.js",
+      "target": "Backend/config/firebase.js"
+    },
+    {
+      "raw_import": "../config/firebase",
+      "source": "Backend/middleware/auth.middleware.js",
+      "target": "Backend/config/firebase.js"
+    },
+    {
+      "raw_import": "../models/user.model",
+      "source": "Backend/middleware/auth.middleware.js",
+      "target": "Backend/models/user.model.js"
+    },
+    {
+      "raw_import": "../models/user.model",
+      "source": "Backend/routes/auth.route.js",
+      "target": "Backend/models/user.model.js"
+    },
+    {
+      "raw_import": "../models/otp.model",
+      "source": "Backend/routes/auth.route.js",
+      "target": "Backend/models/otp.model.js"
+    },
+    {
+      "raw_import": "../services/email.service",
+      "source": "Backend/routes/auth.route.js",
+      "target": "Backend/services/email.service.js"
+    },
+    {
+      "raw_import": "../models/coverLetter.model",
+      "source": "Backend/routes/coverLetter.route.js",
+      "target": "Backend/models/coverLetter.model.js"
+    },
+    {
+      "raw_import": "../services/coverLetter.service",
+      "source": "Backend/routes/coverLetter.route.js",
+      "target": "Backend/services/coverLetter.service.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/coverLetter.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../services/role.service",
+      "source": "Backend/routes/cv.route.js",
+      "target": "Backend/services/role.service.js"
+    },
+    {
+      "raw_import": "../services/ai.service",
+      "source": "Backend/routes/cv.route.js",
+      "target": "Backend/services/ai.service.js"
+    },
+    {
+      "raw_import": "../models/cvHistory.model",
+      "source": "Backend/routes/cv.route.js",
+      "target": "Backend/models/cvHistory.model.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/cv.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../models/cvHistory.model",
+      "source": "Backend/routes/cvHistory.route.js",
+      "target": "Backend/models/cvHistory.model.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/cvHistory.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/learning.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../models/courseRecommendation.model",
+      "source": "Backend/routes/learning.route.js",
+      "target": "Backend/models/courseRecommendation.model.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/pdf.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../services/email.service",
+      "source": "Backend/routes/pdf.route.js",
+      "target": "Backend/services/email.service.js"
+    },
+    {
+      "raw_import": "../services/role.service",
+      "source": "Backend/routes/role.route.js",
+      "target": "Backend/services/role.service.js"
+    },
+    {
+      "raw_import": "../controllers/user.controller",
+      "source": "Backend/routes/user.route.js",
+      "target": "Backend/controllers/user.controller.js"
+    },
+    {
+      "raw_import": "../middleware/auth.middleware",
+      "source": "Backend/routes/user.route.js",
+      "target": "Backend/middleware/auth.middleware.js"
+    },
+    {
+      "raw_import": "../models/otp.model",
+      "source": "Backend/services/email.service.js",
+      "target": "Backend/models/otp.model.js"
+    },
+    {
+      "raw_import": "../models/user.model",
+      "source": "Backend/services/user.service.js",
+      "target": "Backend/models/user.model.js"
+    },
+    {
+      "raw_import": "App",
+      "source": "Frontent/src/main.jsx",
+      "target": "Frontent/src/App.jsx"
+    },
+    {
+      "raw_import": "PasswordResetVerification",
+      "source": "Frontent/src/components/ForgotPassword.jsx",
+      "target": "Frontent/src/components/PasswordResetVerification.jsx"
+    },
+    {
+      "raw_import": "ThemeToggle",
+      "source": "Frontent/src/components/Navbar.jsx",
+      "target": "Frontent/src/components/ThemeToggle.jsx"
+    }
+  ]
+}

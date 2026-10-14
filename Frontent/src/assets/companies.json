@@ -1,0 +1,133 @@
+[
+  {
+    "id": "google",
+    "name": "Google",
+    "roles": [
+      "Software Engineer",
+      "Data Analyst",
+      "Product Manager",
+      "Cloud Architect"
+    ]
+  },
+  {
+    "id": "amazon",
+    "name": "Amazon",
+    "roles": [
+      "Software Developer",
+      "Data Scientist",
+      "Operations Manager",
+      "Cloud Support Engineer"
+    ]
+  },
+  {
+    "id": "microsoft",
+    "name": "Microsoft",
+    "roles": [
+      "Software Engineer",
+      "Product Manager",
+      "Cloud Engineer",
+      "Business Analyst"
+    ]
+  },
+  {
+    "id": "meta",
+    "name": "Meta (Facebook)",
+    "roles": [
+      "Software Engineer",
+      "Frontend Engineer",
+      "Data Scientist"
+    ]
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "roles": [
+      "iOS Engineer",
+      "Software Development Engineer"
+    ]
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "roles": [
+      "Senior Software Engineer",
+      "UI Engineer"
+    ]
+  },
+  {
+    "id": "kpmg",
+    "name": "KPMG",
+    "roles": [
+      "Technology Consultant",
+      "Cyber Security Consultant"
+    ]
+  },
+  {
+    "id": "deloitte",
+    "name": "Deloitte",
+    "roles": [
+      "Technology Analyst",
+      "Cloud Engineer"
+    ]
+  },
+  {
+    "id": "tcs",
+    "name": "TCS (Tata Consultancy Services)",
+    "roles": [
+      "Systems Engineer",
+      "Full Stack Developer"
+    ]
+  },
+  {
+    "id": "infosys",
+    "name": "Infosys",
+    "roles": [
+      "Specialist Programmer",
+      "Technology Analyst"
+    ]
+  },
+  {
+    "id": "accenture",
+    "name": "Accenture",
+    "roles": [
+      "Associate Software Engineer",
+      "Cloud Migration Specialist"
+    ]
+  },
+  {
+    "id": "jpmorgan",
+    "name": "JPMorgan Chase",
+    "roles": [
+      "Software Engineer",
+      "Quantitative Analyst"
+    ]
+  },
+  {
+    "id": "goldman_sachs",
+    "name": "Goldman Sachs",
+    "roles": [
+      "Software Engineering Analyst"
+    ]
+  },
+  {
+    "id": "uber",
+    "name": "Uber",
+    "roles": [
+      "Backend Engineer"
+    ]
+  },
+  {
+    "id": "salesforce",
+    "name": "Salesforce",
+    "roles": [
+      "Software Engineer"
+    ]
+  },
+  {
+    "id": "custom",
+    "name": "✨ Other / Custom Company",
+    "roles": [
+      "Custom Role"
+    ]
+  }
+]

@@ -1,0 +1,189 @@
+{
+  "project_root": "V:\\Coding\\ResumeBuilder",
+  "created_at": "2026-09-03T07:23:23.968031+00:00",
+  "last_updated": "2026-09-05T06:34:38.121978+00:00",
+  "locked_features": {
+    "Backend/db/db.js": {
+      "id": "8086b971-e17a-4d13-954b-53a9bf28d6e7",
+      "file_path": "Backend/db/db.js",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true,
+      "reason": "Database connection pool is stable",
+      "locked_at": "2026-09-03T07:23:23.973044+00:00",
+      "locked_by": "developer",
+      "status": "frozen",
+      "checksum": "74f1c57fd4d6c1d6278ceba5bafbb2d86ae8bcd46f2c0bdf8fbad2e54cb356a0"
+    },
+    "Backend/controllers/user.controller.js": {
+      "id": "b258fd0a-be0b-4ef9-a66e-0e68b29b1876",
+      "file_path": "Backend/controllers/user.controller.js",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true,
+      "reason": "User CRUD operations locked",
+      "locked_at": "2026-09-03T07:24:04.814808+00:00",
+      "locked_by": "developer",
+      "status": "frozen",
+      "checksum": "57b412b065a17d29c65bd5e18ab156cda2b858a10978423dd7d9c8fec9d8d335"
+    },
+    "Frontent/src/Context/AuthContext.jsx": {
+      "id": "9c0beb55-8dd5-41e5-ac41-207a4e3635bf",
+      "file_path": "Frontent/src/Context/AuthContext.jsx",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true,
+      "reason": "Global auth state management locked",
+      "locked_at": "2026-09-03T07:24:18.126580+00:00",
+      "locked_by": "developer",
+      "status": "frozen",
+      "checksum": "2dc1711d138eabec435215cef02de01cd10b15a9c02fd10442a8ee13066c7ad4"
+    },
+    "Frontent/src/services/api.jsx": {
+      "id": "9c7dea0b-10f2-45a6-acbd-056fa21a8739",
+      "file_path": "Frontent/src/services/api.jsx",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true,
+      "reason": "Base API client locked",
+      "locked_at": "2026-09-03T07:24:24.469146+00:00",
+      "locked_by": "developer",
+      "status": "frozen",
+      "checksum": "9ed0ee10157abbeb2378aa77df7754704e6d86414ccb0cbf9c8623050c40b41c"
+    },
+    "Backend/middleware/auth.middleware.js": {
+      "id": "23d1178e-b87b-4628-a9d0-e01d31184d0d",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true,
+      "reason": "Locked via Visualizer Dashboard",
+      "locked_at": "2026-09-05T06:34:38.121955+00:00",
+      "locked_by": "developer",
+      "status": "frozen",
+      "checksum": "bfaf2d26788c5acbe63aeb19070b19fa877fa6059a434f02ff4816922bc3821a"
+    }
+  },
+  "change_history": [
+    {
+      "event": "file_locked",
+      "file_path": "Backend/db/db.js",
+      "timestamp": "2026-09-03T07:23:23.973064+00:00",
+      "reason": "Database connection pool is stable",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-03T07:23:40.312518+00:00",
+      "reason": "JWT verification logic must not be modified",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/routes/auth.route.js",
+      "timestamp": "2026-09-03T07:23:55.252910+00:00",
+      "reason": "Auth endpoints locked",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/controllers/user.controller.js",
+      "timestamp": "2026-09-03T07:24:04.814825+00:00",
+      "reason": "User CRUD operations locked",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Frontent/src/Context/AuthContext.jsx",
+      "timestamp": "2026-09-03T07:24:18.126597+00:00",
+      "reason": "Global auth state management locked",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Frontent/src/services/api.jsx",
+      "timestamp": "2026-09-03T07:24:24.469162+00:00",
+      "reason": "Base API client locked",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_unlocked",
+      "file_path": "Backend/routes/auth.route.js",
+      "timestamp": "2026-09-03T07:40:25.435971+00:00",
+      "reason": "Manual unlock",
+      "functions_unlocked": "all"
+    },
+    {
+      "event": "file_unlocked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-03T07:53:38.493295+00:00",
+      "reason": "Manual unlock",
+      "functions_unlocked": "all"
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-03T07:54:05.534422+00:00",
+      "reason": "There is no change in it to be done",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_unlocked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-03T10:42:00.671604+00:00",
+      "reason": "Manual unlock",
+      "functions_unlocked": "all"
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-03T10:42:08.795792+00:00",
+      "reason": "asfsaf",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-05T06:34:35.182027+00:00",
+      "reason": "Locked via Visualizer Dashboard",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-05T06:34:36.817985+00:00",
+      "reason": "Locked via Visualizer Dashboard",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    },
+    {
+      "event": "file_locked",
+      "file_path": "Backend/middleware/auth.middleware.js",
+      "timestamp": "2026-09-05T06:34:38.121972+00:00",
+      "reason": "Locked via Visualizer Dashboard",
+      "locked_functions": [],
+      "locked_classes": [],
+      "lock_entire_file": true
+    }
+  ]
+}
