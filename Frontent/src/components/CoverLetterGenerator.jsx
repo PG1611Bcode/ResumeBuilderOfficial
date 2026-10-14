@@ -135,7 +135,6 @@ const CoverLetterGenerator = () => {
       if (response.data.success) {
         setCoverLetter(response.data.data);
         setEditedContent(response.data.data.content);
-        alert('✅ Cover letter generated successfully!');
       }
     } catch (error) {
       console.error('Error generating cover letter:', error);
@@ -154,7 +153,6 @@ const CoverLetterGenerator = () => {
       if (response.data.success) {
         setCoverLetter(response.data.data);
         setEditedContent(response.data.data.content);
-        alert(`✅ Generated new version ${response.data.data.version || 2}!`);
       }
     } catch (error) {
       console.error('Error regenerating:', error);
@@ -189,295 +187,360 @@ const CoverLetterGenerator = () => {
     setUserInfo(prev => ({ ...prev, [field]: value }));
   };
 
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: 'transparent',
+      borderColor: state.isFocused ? '#3b82f6' : '#9ca3af',
+      borderRadius: '0.75rem',
+      padding: '0.2rem',
+      boxShadow: state.isFocused ? '0 0 0 2px rgba(59, 130, 246, 0.2)' : 'none',
+      color: 'inherit'
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'inherit'
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: '#1f2937',
+      borderRadius: '0.75rem',
+      border: '1px solid #374151',
+      zIndex: 50
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected ? '#2563eb' : state.isFocused ? '#374151' : 'transparent',
+      color: '#f9fafb',
+      cursor: 'pointer'
+    })
+  };
+
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 py-10 px-4 sm:px-6 lg:px-8 transition-colors">
+      <div className="max-w-5xl mx-auto space-y-8">
 
-      {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#1a202c', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          💼 AI Cover Letter Generator
-        </h2>
-        <p style={{ color: '#718096', fontSize: '1rem' }}>
-          Create high-converting, ATS-tailored cover letters for any major company or custom job description
-        </p>
-      </div>
-
-      {/* Step 1: Upload CV */}
-      <div style={{ background: 'white', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#2d3748' }}>
-          📄 Step 1: Upload Your CV (Optional)
-        </h3>
-        <p style={{ color: '#718096', marginBottom: '1rem', fontSize: '0.9rem' }}>
-          Upload your existing CV to auto-extract your skills and experience, or manually enter your information below.
-        </p>
-        <input 
-          type="file" 
-          accept=".pdf,.doc,.docx,.txt" 
-          onChange={handleCVUpload} 
-          style={{ padding: '0.75rem', border: '2px dashed #cbd5e0', borderRadius: '8px', width: '100%', cursor: 'pointer', background: '#f7fafc' }} 
-        />
-        {loading && <p style={{ marginTop: '0.75rem', color: '#4299e1', fontWeight: '500' }}>⏳ Extracting information from CV...</p>}
-        {cvUploaded && <p style={{ marginTop: '0.75rem', color: '#38a169', fontWeight: '600' }}>✅ CV uploaded successfully! Information auto-filled below.</p>}
-      </div>
-
-      {/* Step 2: Candidate Information */}
-      <div style={{ background: 'white', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2d3748', marginBottom: '1rem' }}>
-          👤 Step 2: Your Information & Credentials
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Full Name *</label>
-            <input 
-              type="text" 
-              value={userInfo.name} 
-              onChange={(e) => handleUserInfoChange('name', e.target.value)} 
-              placeholder="e.g. Sarah Jenkins" 
-              style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem' }} 
-            />
+        {/* Header */}
+        <div className="text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            <span>✨ AI Writer</span>
           </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Email Address *</label>
-            <input 
-              type="email" 
-              value={userInfo.email} 
-              onChange={(e) => handleUserInfoChange('email', e.target.value)} 
-              placeholder="e.g. sarah@example.com" 
-              style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem' }} 
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Phone Number</label>
-            <input 
-              type="tel" 
-              value={userInfo.phone} 
-              onChange={(e) => handleUserInfoChange('phone', e.target.value)} 
-              placeholder="e.g. +1 (555) 019-2834" 
-              style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem' }} 
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Years of Experience</label>
-            <input 
-              type="text" 
-              value={userInfo.experience} 
-              onChange={(e) => handleUserInfoChange('experience', e.target.value)} 
-              placeholder="e.g., 3+ years in full-stack engineering" 
-              style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem' }} 
-            />
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+            <span>💼</span> AI Cover Letter Generator
+          </h1>
+          <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base max-w-2xl">
+            Create high-converting, ATS-tailored cover letters for any major company or custom job description.
+          </p>
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Key Technical Skills (comma separated)</label>
-          <textarea 
-            value={Array.isArray(userInfo.skills) ? userInfo.skills.join(', ') : userInfo.skills} 
-            onChange={(e) => handleUserInfoChange('skills', e.target.value.split(',').map(s => s.trim()))} 
-            placeholder="e.g. React, Node.js, TypeScript, AWS, System Architecture, Docker, PostgreSQL" 
-            rows={2} 
-            style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem', resize: 'vertical' }} 
-          />
-        </div>
-      </div>
-
-      {/* Step 3: Select or Type Target Company & Role */}
-      <div style={{ background: 'white', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2d3748', margin: 0 }}>
-            🎯 Step 3: Target Company & Role
+        {/* Step 1: Upload CV */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
+            <span>📄</span> Step 1: Upload Your CV (Optional)
           </h3>
-          <button
-            type="button"
-            onClick={() => {
-              setIsCustomMode(!isCustomMode);
-              if (!isCustomMode) {
-                setSelectedCompany(null);
-                setSelectedRole(null);
-              }
-            }}
-            style={{
-              padding: '0.4rem 0.9rem',
-              fontSize: '0.875rem',
-              fontWeight: '600',
-              color: isCustomMode ? '#4c51bf' : '#4a5568',
-              background: isCustomMode ? '#ebf4ff' : '#f7fafc',
-              border: `1px solid ${isCustomMode ? '#4c51bf' : '#cbd5e0'}`,
-              borderRadius: '6px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem'
-            }}
-          >
-            {isCustomMode ? '📋 Switch to Dropdown Mode' : '✏️ Type Custom Company & Role'}
-          </button>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Upload your existing CV to auto-extract your skills and experience, or manually enter your information below.
+          </p>
+
+          <label className="block border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-6 text-center bg-gray-50 dark:bg-gray-700/30 hover:border-blue-500 dark:hover:border-blue-400 cursor-pointer transition-colors">
+            <span className="text-3xl block mb-2">📎</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">
+              {cvFile ? cvFile.name : 'Click to select or drag & drop your CV (PDF, DOCX, TXT)'}
+            </span>
+            <span className="text-xs text-gray-400 mt-1 block">Max size: 10MB</span>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={handleCVUpload}
+              className="hidden"
+            />
+          </label>
+
+          {loading && (
+            <p className="mt-3 text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+              <span className="animate-spin inline-block">⏳</span> Extracting information from CV...
+            </p>
+          )}
+          {cvUploaded && (
+            <p className="mt-3 text-xs sm:text-sm font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+              <span>✅</span> CV uploaded successfully! Information auto-filled below.
+            </p>
+          )}
         </div>
 
-        {isCustomMode ? (
-          /* Custom Company and Role Inputs */
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        {/* Step 2: Candidate Information */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+            <span>👤</span> Step 2: Your Information & Credentials
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#2d3748' }}>
-                🏢 Custom Company Name *
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                Full Name *
               </label>
-              <input 
-                type="text" 
-                value={customCompany} 
-                onChange={(e) => setCustomCompany(e.target.value)} 
-                placeholder="e.g. OpenAI, Stripe, Scale AI, or Startup Name" 
-                style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem', background: 'white' }} 
+              <input
+                type="text"
+                value={userInfo.name}
+                onChange={(e) => handleUserInfoChange('name', e.target.value)}
+                placeholder="e.g. Alex Morgan"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
             </div>
+
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#2d3748' }}>
-                💼 Custom Target Role *
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                Email Address *
               </label>
-              <input 
-                type="text" 
-                value={customRole} 
-                onChange={(e) => setCustomRole(e.target.value)} 
-                placeholder="e.g. Senior Full Stack Engineer, AI Solutions Architect" 
-                style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '1rem', background: 'white' }} 
+              <input
+                type="email"
+                value={userInfo.email}
+                onChange={(e) => handleUserInfoChange('email', e.target.value)}
+                placeholder="e.g. alex@example.com"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={userInfo.phone}
+                onChange={(e) => handleUserInfoChange('phone', e.target.value)}
+                placeholder="e.g. +1 (555) 234-5678"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                Years of Experience
+              </label>
+              <input
+                type="text"
+                value={userInfo.experience}
+                onChange={(e) => handleUserInfoChange('experience', e.target.value)}
+                placeholder="e.g. 5+ years in full-stack cloud systems"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
             </div>
           </div>
-        ) : (
-          /* Preset Dropdowns */
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Select Company *</label>
-              <Select 
-                value={selectedCompany} 
-                onChange={setSelectedCompany} 
-                options={companyOptions} 
-                placeholder="Choose from 16+ companies..." 
-                styles={{ control: (base) => ({ ...base, padding: '0.25rem', borderRadius: '8px', border: '1px solid #cbd5e0' }) }} 
-              />
+
+          <div className="mt-4">
+            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+              Key Technical Skills (comma separated)
+            </label>
+            <textarea
+              value={Array.isArray(userInfo.skills) ? userInfo.skills.join(', ') : userInfo.skills}
+              onChange={(e) => handleUserInfoChange('skills', e.target.value.split(',').map(s => s.trim()))}
+              placeholder="e.g. React, Node.js, Python, AWS Lambda, Docker, PostgreSQL, CI/CD"
+              rows={2}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
+            />
+          </div>
+        </div>
+
+        {/* Step 3: Target Company & Role */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <span>🎯</span> Step 3: Target Company & Role
+            </h3>
+            <button
+              type="button"
+              onClick={() => {
+                setIsCustomMode(!isCustomMode);
+                if (!isCustomMode) {
+                  setSelectedCompany(null);
+                  setSelectedRole(null);
+                }
+              }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors self-start sm:self-auto"
+            >
+              {isCustomMode ? '📋 Switch to Dropdown Selection' : '✏️ Type Custom Company & Role'}
+            </button>
+          </div>
+
+          {isCustomMode ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                  🏢 Custom Company Name *
+                </label>
+                <input
+                  type="text"
+                  value={customCompany}
+                  onChange={(e) => setCustomCompany(e.target.value)}
+                  placeholder="e.g. OpenAI, Stripe, Scale AI"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                  💼 Custom Target Role *
+                </label>
+                <input
+                  type="text"
+                  value={customRole}
+                  onChange={(e) => setCustomRole(e.target.value)}
+                  placeholder="e.g. Lead Distributed Systems Engineer"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+              </div>
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>Select Role *</label>
-              <Select 
-                value={selectedRole} 
-                onChange={setSelectedRole} 
-                options={roleOptions} 
-                placeholder={selectedCompany ? "Select target role..." : "Select company first"} 
-                isDisabled={!selectedCompany || selectedCompany.value === 'custom'} 
-                styles={{ control: (base) => ({ ...base, padding: '0.25rem', borderRadius: '8px', border: '1px solid #cbd5e0' }) }} 
-              />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                  Select Company *
+                </label>
+                <Select
+                  value={selectedCompany}
+                  onChange={setSelectedCompany}
+                  options={companyOptions}
+                  placeholder="Choose target company..."
+                  styles={customSelectStyles}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+                  Select Role *
+                </label>
+                <Select
+                  value={selectedRole}
+                  onChange={setSelectedRole}
+                  options={roleOptions}
+                  placeholder={selectedCompany ? 'Select target role...' : 'Select company first'}
+                  isDisabled={!selectedCompany || selectedCompany.value === 'custom'}
+                  styles={customSelectStyles}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Job Description */}
+          <div className="mt-5">
+            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
+              📋 Paste Job Description (Optional, enhances AI tailoring)
+            </label>
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste key responsibilities, preferred qualifications, or company values here..."
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            />
+          </div>
+
+          {/* Tone / Writing Style */}
+          <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-wrap items-center gap-4">
+            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+              Writing Style:
+            </span>
+            {['professional', 'technical', 'creative'].map(t => (
+              <label
+                key={t}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer border transition-all ${
+                  selectedTemplate === t
+                    ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shadow-sm'
+                    : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="template"
+                  value={t}
+                  checked={selectedTemplate === t}
+                  onChange={() => setSelectedTemplate(t)}
+                  className="hidden"
+                />
+                <span className="capitalize">{t}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Generate Button */}
+        <div className="text-center py-4">
+          <button
+            onClick={handleGenerate}
+            disabled={generating || !activeCompany || !activeRole || !userInfo.name || !userInfo.email}
+            className="px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl shadow-xl shadow-purple-500/20 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-base"
+          >
+            {generating ? '⏳ Crafting Tailored Cover Letter...' : `✨ Generate Cover Letter for ${activeCompany || 'Target Role'}`}
+          </button>
+          {generating && (
+            <p className="mt-3 text-xs sm:text-sm text-purple-600 dark:text-purple-400 font-medium animate-pulse">
+              Our AI is reviewing company culture and tailoring your experience. Please hold on...
+            </p>
+          )}
+        </div>
+
+        {/* Generated Cover Letter Display */}
+        {coverLetter && (
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-500/40 dark:border-emerald-500/30 transition-colors animate-fade-in-up">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  Version {coverLetter.version || 1}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-2">
+                  Tailored Cover Letter for {activeCompany}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Role: <span className="font-semibold text-gray-700 dark:text-gray-200">{activeRole}</span> • Style: <span className="capitalize">{selectedTemplate}</span>
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setEditMode(!editMode)}
+                  className="px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5"
+                >
+                  <span>{editMode ? '👁️' : '✏️'}</span>
+                  <span>{editMode ? 'Preview' : 'Edit'}</span>
+                </button>
+                <button
+                  onClick={handleRegenerate}
+                  disabled={generating}
+                  className="px-3 py-2 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5"
+                >
+                  <span>🔄</span>
+                  <span>Alternative</span>
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition-all shadow-md flex items-center gap-1.5"
+                >
+                  <span>📥</span>
+                  <span>Download PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 bg-gray-50 dark:bg-gray-900/60 p-6 sm:p-8 rounded-2xl border border-gray-200 dark:border-gray-700">
+              {editMode ? (
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  className="w-full min-h-[450px] p-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl font-serif text-sm sm:text-base leading-relaxed text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                />
+              ) : (
+                <div className="font-serif text-sm sm:text-base leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                  {editedContent || coverLetter.content}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-xl text-xs text-blue-800 dark:text-blue-300">
+              💡 <strong>Pro Tip:</strong> Click <strong>Edit</strong> to personalize any project references or greeting lines before generating your PDF.
             </div>
           </div>
         )}
 
-        {/* Custom Job Description Input (Optional) */}
-        <div style={{ marginTop: '1.25rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#4a5568' }}>
-            📋 Paste Job Description or Requirements (Optional, enhances AI accuracy)
-          </label>
-          <textarea 
-            value={jobDescription} 
-            onChange={(e) => setJobDescription(e.target.value)} 
-            placeholder="Paste the job description, key responsibilities, or desired qualifications here to let AI tailor the letter precisely to the job posting..." 
-            rows={4} 
-            style={{ width: '100%', padding: '0.75rem', border: '1px solid #cbd5e0', borderRadius: '8px', fontSize: '0.95rem', resize: 'vertical' }} 
-          />
-        </div>
-
-        {/* Tone/Template Selection */}
-        <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: '500', color: '#4a5568', fontSize: '0.9rem' }}>Writing Style:</span>
-          {['professional', 'technical', 'creative'].map(t => (
-            <label key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem', color: '#2d3748' }}>
-              <input 
-                type="radio" 
-                name="template" 
-                value={t} 
-                checked={selectedTemplate === t} 
-                onChange={() => setSelectedTemplate(t)} 
-              />
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </label>
-          ))}
-        </div>
       </div>
-
-      {/* Generate Button */}
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <button 
-          onClick={handleGenerate} 
-          disabled={generating || !activeCompany || !activeRole || !userInfo.name || !userInfo.email} 
-          style={{ 
-            padding: '1rem 3rem', 
-            fontSize: '1.125rem', 
-            fontWeight: '600', 
-            color: 'white', 
-            background: generating ? '#cbd5e0' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-            border: 'none', 
-            borderRadius: '8px', 
-            cursor: (generating || !activeCompany || !activeRole || !userInfo.name || !userInfo.email) ? 'not-allowed' : 'pointer', 
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
-            transition: 'all 0.3s ease' 
-          }}
-        >
-          {generating ? '⏳ Crafting Tailored Cover Letter...' : `✨ Generate Cover Letter for ${activeCompany || 'Target Role'}`}
-        </button>
-        {generating && <p style={{ marginTop: '1rem', color: '#667eea', fontWeight: '500' }}>Our AI is researching company patterns and tailoring your cover letter. Please hold on...</p>}
-      </div>
-
-      {/* Generated Cover Letter Display */}
-      {coverLetter && (
-        <div style={{ background: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', border: '2px solid #48bb78' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '2px solid #e2e8f0', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#2d3748', marginBottom: '0.25rem' }}>
-                ✅ Tailored Cover Letter for {activeCompany}
-              </h3>
-              <p style={{ color: '#718096', fontSize: '0.9rem' }}>
-                Role: {activeRole} • Style: {selectedTemplate} • Version {coverLetter.version || 1}
-              </p>
-            </div>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button onClick={() => setEditMode(!editMode)} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: editMode ? 'white' : '#4299e1', background: editMode ? '#4299e1' : 'white', border: `2px solid #4299e1`, borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}>
-                {editMode ? '👁️ Preview' : '✏️ Edit'}
-              </button>
-              <button onClick={handleRegenerate} disabled={generating} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: '#805ad5', background: 'white', border: '2px solid #805ad5', borderRadius: '6px', cursor: generating ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
-                🔄 Regenerate Alternative
-              </button>
-              <button onClick={handleDownload} style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', fontWeight: '500', color: 'white', background: '#48bb78', border: 'none', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}>
-                📥 Download PDF
-              </button>
-            </div>
-          </div>
-          <div style={{ background: '#f7fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            {editMode ? (
-              <textarea 
-                value={editedContent} 
-                onChange={(e) => setEditedContent(e.target.value)} 
-                style={{ width: '100%', minHeight: '500px', padding: '1rem', fontSize: '1rem', lineHeight: '1.6', fontFamily: 'Georgia, serif', border: '1px solid #cbd5e0', borderRadius: '6px', resize: 'vertical' }} 
-              />
-            ) : (
-              <div style={{ fontSize: '1rem', lineHeight: '1.8', color: '#2d3748', fontFamily: 'Georgia, serif', whiteSpace: 'pre-wrap' }}>
-                {editedContent || coverLetter.content}
-              </div>
-            )}
-          </div>
-          <div style={{ marginTop: '1rem', padding: '1rem', background: '#edf2f7', borderRadius: '6px', borderLeft: '4px solid #4299e1' }}>
-            <p style={{ fontSize: '0.875rem', color: '#4a5568', margin: 0 }}>
-              💡 <strong>Tip:</strong> Click <strong>Edit</strong> to customize paragraphs before downloading your PDF.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!coverLetter && !generating && (
-        <div style={{ textAlign: 'center', padding: '3rem', background: '#f7fafc', borderRadius: '12px', border: '2px dashed #cbd5e0' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
-          <h3 style={{ fontSize: '1.25rem', color: '#4a5568', marginBottom: '0.5rem' }}>Ready to Create Your Cover Letter?</h3>
-          <p style={{ color: '#718096' }}>
-            Select a target company from the dropdown or type a custom company & role to begin.
-          </p>
-        </div>
-      )}
     </div>
   );
 };

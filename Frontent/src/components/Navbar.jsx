@@ -44,6 +44,12 @@ const Navbar = () => {
                   Dashboard
                 </Link>
                 <Link 
+                  to="/create-resume" 
+                  className="text-gray-300 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-300 hover:bg-gray-700/50"
+                >
+                  Create Resume
+                </Link>
+                <Link 
                   to="/cover-letter" 
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-300 hover:bg-gray-700/50"
                 >
@@ -131,6 +137,13 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Dashboard
+                </Link>
+                <Link 
+                  to="/create-resume" 
+                  className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg text-base font-medium transition-colors duration-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Create Resume
                 </Link>
                 <Link 
                   to="/cover-letter" 

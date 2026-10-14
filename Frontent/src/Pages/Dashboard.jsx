@@ -164,7 +164,7 @@ const Dashboard = () => {
 
   const handleUseTemplate = (templateId) => {
     setSelectedTemplate(null);
-    navigate('/', { state: { templateId } });
+    navigate('/create-resume', { state: { templateId } });
   };
 
   const displayName = user?.fullname?.firstname || user?.name?.split(' ')[0] || 'User';
@@ -191,7 +191,7 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/create-resume')}
                 className="px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
               >
                 <span>➕ Create Resume</span>
@@ -289,7 +289,7 @@ const Dashboard = () => {
                   icon: '📝',
                   color: 'from-blue-500 to-indigo-600',
                   badge: 'Core Tool',
-                  action: () => navigate('/')
+                  action: () => navigate('/create-resume')
                 },
                 {
                   title: 'Edit Profile',
@@ -418,7 +418,7 @@ const Dashboard = () => {
                     Create your first CV analysis to track recommendations, match scores, and versions here!
                   </p>
                   <button
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/create-resume')}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-medium transition-all shadow-md"
                   >
                     Create Your First Resume

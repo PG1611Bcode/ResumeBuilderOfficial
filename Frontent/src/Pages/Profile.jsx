@@ -247,21 +247,21 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center">
         <div className="text-center animate-fade-in-up">
           <div className="relative mx-auto w-20 h-20 mb-8">
             <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full"></div>
             <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">Loading your profile...</h3>
-          <p className="text-gray-500">Please wait while we fetch your information</p>
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Loading your profile...</h3>
+          <p className="text-gray-500 dark:text-gray-400">Please wait while we fetch your information</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 py-12 relative overflow-hidden">
       {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-32 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -269,7 +269,7 @@ const Profile = () => {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/50 animate-fade-in-up">
+        <div className="bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/50 dark:border-gray-700 animate-fade-in-up">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 px-8 py-8">
             <div className="flex items-center space-x-4">
@@ -308,11 +308,11 @@ const Profile = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                   1
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Basic Information</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Basic Information</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors group-focus-within:text-blue-600">
                     First Name
                   </label>
                   <div className="relative">
@@ -320,14 +320,14 @@ const Profile = () => {
                       type="text"
                       value={profileData.fullname.firstname}
                       onChange={(e) => handleInputChange('fullname', 'firstname', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                       placeholder="Enter your first name"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
                   </div>
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors group-focus-within:text-blue-600">
                     Last Name
                   </label>
                   <div className="relative">
@@ -335,7 +335,7 @@ const Profile = () => {
                       type="text"
                       value={profileData.fullname.lastname}
                       onChange={(e) => handleInputChange('fullname', 'lastname', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                       placeholder="Enter your last name"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
@@ -350,7 +350,7 @@ const Profile = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                   2
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Contact Information</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Contact Information</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
@@ -360,7 +360,7 @@ const Profile = () => {
                   { key: 'portfolio', label: 'Portfolio', placeholder: 'https://yourportfolio.com', type: 'url' }
                 ].map((field, index) => (
                   <div key={field.key} className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors group-focus-within:text-blue-600">
                       {field.label}
                     </label>
                     <div className="relative">
@@ -368,7 +368,7 @@ const Profile = () => {
                         type={field.type}
                         value={profileData.profile[field.key]}
                         onChange={(e) => handleInputChange('profile', field.key, e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         placeholder={field.placeholder}
                       />
                       <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
@@ -384,7 +384,7 @@ const Profile = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                   3
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Professional Summary</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Professional Summary</h2>
               </div>
               <div className="group">
                 <div className="relative">
@@ -392,12 +392,12 @@ const Profile = () => {
                     value={profileData.profile.summary}
                     onChange={(e) => handleInputChange('profile', 'summary', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400 resize-none"
                     placeholder="Write a brief professional summary that highlights your key skills, experience, and career objectives..."
                   />
                   <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
                 </div>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   {profileData.profile.summary.length}/500 characters
                 </p>
               </div>
@@ -410,7 +410,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     4
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Work Experience</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Work Experience</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('experience')}
@@ -421,9 +421,9 @@ const Profile = () => {
               </div>
               
               {profileData.experience.map((exp, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Experience #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Experience #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('experience', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -434,52 +434,52 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Company</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Company</label>
                       <input
                         type="text"
                         value={exp.company}
                         onChange={(e) => handleInputChange('experience', 'company', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Company Name"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Position</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position</label>
                       <input
                         type="text"
                         value={exp.position}
                         onChange={(e) => handleInputChange('experience', 'position', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Job Title"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
                       <input
                         type="text"
                         value={exp.location}
                         onChange={(e) => handleInputChange('experience', 'location', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="City, State"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
                       <input
                         type="date"
                         value={exp.startDate}
                         onChange={(e) => handleInputChange('experience', 'startDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
                       <input
                         type="date"
                         value={exp.endDate}
                         onChange={(e) => handleInputChange('experience', 'endDate', e.target.value, index)}
                         disabled={exp.isCurrentJob}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 disabled:bg-gray-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 disabled:bg-gray-200 dark:disabled:bg-gray-800"
                       />
                     </div>
                     <div className="group flex items-center">
@@ -490,19 +490,19 @@ const Profile = () => {
                         onChange={(e) => handleInputChange('experience', 'isCurrentJob', e.target.checked, index)}
                         className="mr-2"
                       />
-                      <label htmlFor={`current-job-${index}`} className="text-sm font-semibold text-gray-700">
+                      <label htmlFor={`current-job-${index}`} className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         Current Job
                       </label>
                     </div>
                   </div>
                   
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
                     <textarea
                       value={exp.description}
                       onChange={(e) => handleInputChange('experience', 'description', e.target.value, index)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 resize-none"
                       placeholder="Describe your role and responsibilities..."
                     />
                   </div>
@@ -517,7 +517,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     5
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Education</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Education</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('education')}
@@ -528,9 +528,9 @@ const Profile = () => {
               </div>
               
               {profileData.education.map((edu, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Education #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Education #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('education', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -541,71 +541,71 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Institution</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Institution</label>
                       <input
                         type="text"
                         value={edu.institution}
                         onChange={(e) => handleInputChange('education', 'institution', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="University/College Name"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Degree</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Degree</label>
                       <input
                         type="text"
                         value={edu.degree}
                         onChange={(e) => handleInputChange('education', 'degree', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Bachelor's, Master's, etc."
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Field of Study</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Field of Study</label>
                       <input
                         type="text"
                         value={edu.fieldOfStudy}
                         onChange={(e) => handleInputChange('education', 'fieldOfStudy', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Computer Science, Business, etc."
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
                       <input
                         type="text"
                         value={edu.location}
                         onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="City, State"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
                       <input
                         type="date"
                         value={edu.startDate}
                         onChange={(e) => handleInputChange('education', 'startDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
                       <input
                         type="date"
                         value={edu.endDate}
                         onChange={(e) => handleInputChange('education', 'endDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">GPA</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">GPA</label>
                       <input
                         type="number"
                         step="0.01"
                         value={edu.gpa}
                         onChange={(e) => handleInputChange('education', 'gpa', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="3.75"
                       />
                     </div>
@@ -620,11 +620,11 @@ const Profile = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                   6
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Skills</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Skills</h2>
               </div>
               <div className="space-y-6">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors group-focus-within:text-blue-600">
                     Technical Skills
                   </label>
                   <div className="relative">
@@ -635,14 +635,14 @@ const Profile = () => {
                         : profileData.skills.technical || ''}
                       onChange={(e) => handleSkillsChange('technical', e.target.value)}
                       onBlur={(e) => handleSkillsBlur('technical', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                       placeholder="JavaScript, React, Node.js, Python, AWS (comma separated)"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
                   </div>
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors group-focus-within:text-blue-600">
                     Soft Skills
                   </label>
                   <div className="relative">
@@ -653,7 +653,7 @@ const Profile = () => {
                         : profileData.skills.soft || ''}
                       onChange={(e) => handleSkillsChange('soft', e.target.value)}
                       onBlur={(e) => handleSkillsBlur('soft', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                       placeholder="Leadership, Communication, Problem Solving, Team Management (comma separated)"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
@@ -669,7 +669,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     7
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Projects</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Projects</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('projects')}
@@ -680,9 +680,9 @@ const Profile = () => {
               </div>
               
               {profileData.projects.map((project, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Project #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Project #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('projects', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -693,72 +693,72 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="group md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Project Title</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Project Title</label>
                       <input
                         type="text"
                         value={project.title}
                         onChange={(e) => handleInputChange('projects', 'title', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Project Name"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Technologies Used</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Technologies Used</label>
                       <input
                         type="text"
                         value={project.technologies}
                         onChange={(e) => handleInputChange('projects', 'technologies', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="React, Node.js, MongoDB (comma separated)"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Project URL</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Project URL</label>
                       <input
                         type="url"
                         value={project.projectUrl}
                         onChange={(e) => handleInputChange('projects', 'projectUrl', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="https://yourproject.com"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">GitHub URL</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">GitHub URL</label>
                       <input
                         type="url"
                         value={project.githubUrl}
                         onChange={(e) => handleInputChange('projects', 'githubUrl', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="https://github.com/username/repo"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
                       <input
                         type="date"
                         value={project.startDate}
                         onChange={(e) => handleInputChange('projects', 'startDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
                       <input
                         type="date"
                         value={project.endDate}
                         onChange={(e) => handleInputChange('projects', 'endDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                   </div>
                   
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
                     <textarea
                       value={project.description}
                       onChange={(e) => handleInputChange('projects', 'description', e.target.value, index)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 resize-none"
                       placeholder="Describe your project..."
                     />
                   </div>
@@ -773,7 +773,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     8
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Certifications</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Certifications</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('certifications')}
@@ -784,9 +784,9 @@ const Profile = () => {
               </div>
               
               {profileData.certifications.map((cert, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Certification #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Certification #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('certifications', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -797,60 +797,60 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Certification Name</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Certification Name</label>
                       <input
                         type="text"
                         value={cert.name}
                         onChange={(e) => handleInputChange('certifications', 'name', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="AWS Certified Solutions Architect"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Issuer</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Issuer</label>
                       <input
                         type="text"
                         value={cert.issuer}
                         onChange={(e) => handleInputChange('certifications', 'issuer', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Amazon Web Services"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Issue Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Issue Date</label>
                       <input
                         type="date"
                         value={cert.issueDate}
                         onChange={(e) => handleInputChange('certifications', 'issueDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Expiry Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Expiry Date</label>
                       <input
                         type="date"
                         value={cert.expiryDate}
                         onChange={(e) => handleInputChange('certifications', 'expiryDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Credential ID</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Credential ID</label>
                       <input
                         type="text"
                         value={cert.credentialId}
                         onChange={(e) => handleInputChange('certifications', 'credentialId', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="ABC123456789"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Credential URL</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Credential URL</label>
                       <input
                         type="url"
                         value={cert.credentialUrl}
                         onChange={(e) => handleInputChange('certifications', 'credentialUrl', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="https://verify.certification.com"
                       />
                     </div>
@@ -866,7 +866,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     9
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Awards & Achievements</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Awards & Achievements</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('awards')}
@@ -877,9 +877,9 @@ const Profile = () => {
               </div>
               
               {profileData.awards.map((award, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Award #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Award #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('awards', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -890,43 +890,43 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Award Title</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Award Title</label>
                       <input
                         type="text"
                         value={award.title}
                         onChange={(e) => handleInputChange('awards', 'title', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Employee of the Year"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Issuer</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Issuer</label>
                       <input
                         type="text"
                         value={award.issuer}
                         onChange={(e) => handleInputChange('awards', 'issuer', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Company/Organization Name"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date</label>
                       <input
                         type="date"
                         value={award.date}
                         onChange={(e) => handleInputChange('awards', 'date', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                   </div>
                   
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
                     <textarea
                       value={award.description}
                       onChange={(e) => handleInputChange('awards', 'description', e.target.value, index)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 resize-none"
                       placeholder="Describe the award and achievement..."
                     />
                   </div>
@@ -941,7 +941,7 @@ const Profile = () => {
                   <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                     10
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Volunteer Experience</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Volunteer Experience</h2>
                 </div>
                 <button
                   onClick={() => addArrayItem('volunteer')}
@@ -952,9 +952,9 @@ const Profile = () => {
               </div>
               
               {profileData.volunteer.map((vol, index) => (
-                <div key={index} className="bg-gray-50 rounded-xl p-6 mb-4 border border-gray-200">
+                <div key={index} className="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-6 mb-4 border border-gray-200 dark:border-gray-600">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Volunteer #{index + 1}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Volunteer #{index + 1}</h3>
                     <button
                       onClick={() => removeArrayItem('volunteer', index)}
                       className="text-red-500 hover:text-red-700 font-semibold"
@@ -965,62 +965,62 @@ const Profile = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Organization</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Organization</label>
                       <input
                         type="text"
                         value={vol.organization}
                         onChange={(e) => handleInputChange('volunteer', 'organization', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Non-profit Organization"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Position</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position</label>
                       <input
                         type="text"
                         value={vol.position}
                         onChange={(e) => handleInputChange('volunteer', 'position', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="Volunteer Coordinator"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
                       <input
                         type="text"
                         value={vol.location}
                         onChange={(e) => handleInputChange('volunteer', 'location', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         placeholder="City, State"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
                       <input
                         type="date"
                         value={vol.startDate}
                         onChange={(e) => handleInputChange('volunteer', 'startDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                     <div className="group">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
                       <input
                         type="date"
                         value={vol.endDate}
                         onChange={(e) => handleInputChange('volunteer', 'endDate', e.target.value, index)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                     </div>
                   </div>
                   
                   <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
                     <textarea
                       value={vol.description}
                       onChange={(e) => handleInputChange('volunteer', 'description', e.target.value, index)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 resize-none"
                       placeholder="Describe your volunteer activities..."
                     />
                   </div>
@@ -1034,7 +1034,7 @@ const Profile = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold mr-4">
                   11
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Interests</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Interests</h2>
               </div>
               <div className="group">
                 <div className="relative">
@@ -1050,7 +1050,7 @@ const Profile = () => {
                       const interestsArray = e.target.value.split(',').map(interest => interest.trim()).filter(interest => interest.length > 0);
                       setProfileData(prev => ({ ...prev, interests: interestsArray }));
                     }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/70 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Photography, Hiking, Open Source, Machine Learning (comma separated)"
                   />
                   <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300 rounded-full"></div>
@@ -1059,10 +1059,10 @@ const Profile = () => {
             </section>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-8 border-t border-gray-200 animate-fade-in-up animation-delay-1400">
+            <div className="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700 animate-fade-in-up animation-delay-1400">
               <button
                 onClick={handleSkip}
-                className="group px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
+                className="group px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 dark:hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
               >
                 <span className="flex items-center justify-center">
                   <span className="mr-2">Skip for Now</span>

@@ -11,6 +11,7 @@ import Dashboard from "./Pages/Dashboard";
 import History from "./Pages/History";
 import CVHistoryDetail from "./Pages/CVHistoryDetail";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
+import CVAnalyzer from "./Pages/CVAnalyzer";
 
 function App() {
   return (
@@ -67,7 +68,23 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/create-resume" element={<Home />} />
+
+            <Route 
+              path="/history/cv/:id" 
+              element={
+                <ProtectedRoute>
+                  <CVHistoryDetail />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/create-resume" 
+              element={
+                <ProtectedRoute>
+                  <CVAnalyzer />
+                </ProtectedRoute>
+              } 
+            />
 
             <Route 
               path="/settings" 

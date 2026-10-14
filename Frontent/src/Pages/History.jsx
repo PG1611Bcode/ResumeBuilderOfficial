@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // ✅ ADD THIS IMPORT
+import { Link } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import api from '../services/api';
 
@@ -27,7 +27,6 @@ const History = () => {
   const fetchCVHistory = async () => {
     setLoading(true);
     try {
-      // ✅ CORRECTED: Changed URL from '/cv/history' to '/api/cv-history'
       const response = await api.get('/api/cv-history');
       if (response.data.success) {
         setCvHistory(response.data.data);
@@ -42,7 +41,6 @@ const History = () => {
   const fetchCoverLetterHistory = async () => {
     setLoading(true);
     try {
-      // ✅ CORRECTED: Changed URL from '/cover-letter/history' to '/api/cover-letter/history'
       const response = await api.get('/api/cover-letter/history');
       if (response.data.success) {
         setCoverLetterHistory(response.data.data);
@@ -51,26 +49,6 @@ const History = () => {
       console.error('Error fetching cover letter history:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // This function is no longer needed on this page but kept in case you need it elsewhere
-  const handleDownloadCV = async (id) => {
-    try {
-      const response = await api.get(`/api/cv/download/${id}`, {
-        responseType: 'blob'
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `CV_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error downloading CV:', error);
-      alert('Failed to download CV');
     }
   };
 
@@ -94,13 +72,12 @@ const History = () => {
   };
 
   const handleDelete = async (type, id, e) => {
-    e.preventDefault(); // Prevent link navigation when clicking delete
-    e.stopPropagation(); // Stop click from bubbling up to parent Link
-    
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
 
     try {
-      // Corrected endpoint for CV history deletion
       const endpoint = type === 'cv' ? `/api/cv-history/${id}` : `/api/cover-letter/${id}`;
       await api.delete(endpoint);
 
@@ -118,185 +95,159 @@ const History = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom, #f7fafc, #edf2f7)', paddingBottom: '3rem' }}>
-
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 pb-16 transition-colors">
+      
       {/* Header */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-        padding: '2rem', 
-        color: 'white',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
-            📚 History
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-10 shadow-lg text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-semibold uppercase tracking-wider mb-3">
+            <span>📚 Saved Archives</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            History & Tailored Versions
           </h1>
-          <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>
-            View and manage your generated CVs and cover letters
+          <p className="mt-2 text-blue-100 text-base sm:text-lg max-w-2xl">
+            Access and manage your generated resumes, ATS scores, and tailored cover letters in one place.
           </p>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div style={{
-        background: 'white',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        borderBottom: '1px solid #e2e8f0'
-      }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          display: 'flex',
-          gap: '1rem'
-        }}>
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-4">
           <button
             onClick={() => setActiveHistoryTab('cv-history')}
-            style={{
-              padding: '1rem 2rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              color: activeHistoryTab === 'cv-history' ? '#4c51bf' : '#4a5568',
-              background: activeHistoryTab === 'cv-history' ? 'white' : 'transparent',
-              border: 'none',
-              borderBottom: activeHistoryTab === 'cv-history' ? '3px solid #4c51bf' : '3px solid transparent',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
+            className={`py-4 px-6 text-sm sm:text-base font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              activeHistoryTab === 'cv-history'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+            }`}
           >
-            <span style={{ fontSize: '1.25rem' }}>📄</span>
-            CV History
+            <span className="text-lg">📄</span>
+            <span>CV History</span>
+            {cvHistory.length > 0 && (
+              <span className="ml-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
+                {cvHistory.length}
+              </span>
+            )}
           </button>
 
           <button
             onClick={() => setActiveHistoryTab('cover-letter-history')}
-            style={{
-              padding: '1rem 2rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              color: activeHistoryTab === 'cover-letter-history' ? '#4c51bf' : '#4a5568',
-              background: activeHistoryTab === 'cover-letter-history' ? 'white' : 'transparent',
-              border: 'none',
-              borderBottom: activeHistoryTab === 'cover-letter-history' ? '3px solid #4c51bf' : '3px solid transparent',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
+            className={`py-4 px-6 text-sm sm:text-base font-semibold flex items-center gap-2 border-b-2 transition-all ${
+              activeHistoryTab === 'cover-letter-history'
+                ? 'border-purple-600 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-900/20'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+            }`}
           >
-            <span style={{ fontSize: '1.25rem' }}>💼</span>
-            Cover Letter History
+            <span className="text-lg">💼</span>
+            <span>Cover Letter History</span>
+            {coverLetterHistory.length > 0 && (
+              <span className="ml-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300">
+                {coverLetterHistory.length}
+              </span>
+            )}
           </button>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ maxWidth: '1400px', margin: '2rem auto', padding: '0 1rem' }}>
+      {/* Content Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
 
         {/* CV History Tab */}
         {activeHistoryTab === 'cv-history' && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: '#2d3748' }}>
-              📄 Your CV History
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span>📄</span> Your Analyzed CVs
+              </h2>
+              <Link
+                to="/create-resume"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1.5"
+              >
+                <span>➕ Analyze New CV</span>
+              </Link>
+            </div>
 
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '3rem', color: '#718096' }}>
-                <p>Loading...</p>
+              <div className="text-center py-20">
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-500 dark:text-gray-400">Loading CV records...</p>
               </div>
             ) : cvHistory.length === 0 ? (
-              <div style={{
-                background: 'white',
-                borderRadius: '12px',
-                padding: '3rem',
-                textAlign: 'center',
-                border: '2px dashed #cbd5e0'
-              }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📭</div>
-                <h3 style={{ fontSize: '1.25rem', color: '#4a5568', marginBottom: '0.5rem' }}>
+              <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 text-center border-2 border-dashed border-gray-300 dark:border-gray-700 shadow-sm max-w-xl mx-auto">
+                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                  📭
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   No CV History Yet
                 </h3>
-                <p style={{ color: '#718096' }}>
-                  Generate your first CV in the Dashboard to see it here!
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                  Analyze your first resume to see ATS match ratings, tailored suggestions, and history logs here!
                 </p>
+                <Link
+                  to="/create-resume"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold shadow-md transition-all transform hover:scale-105 active:scale-95"
+                >
+                  <span>🚀 Create / Analyze Resume</span>
+                </Link>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cvHistory.map((cv) => (
-                  // ✅ MODIFIED: Each card is now a link to the detail page
-                  <Link key={cv._id} to={`/history/cv/${cv._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div style={{
-                      background: 'white',
-                      borderRadius: '12px',
-                      padding: '1.5rem',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      border: '1px solid #e2e8f0',
-                      transition: 'transform 0.2s, box-shadow 0.2s',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '100%'
-                    }}
-                    onMouseOver={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'}
-                    onMouseOut={e => e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)'}
-                    >
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                          <div>
-                            <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#2d3748', marginBottom: '0.25rem' }}>
-                              {cv.companyName || 'Unknown Company'}
-                            </h3>
-                            <p style={{ fontSize: '0.875rem', color: '#718096' }}>
-                              {cv.roleName || 'Unknown Role'}
-                            </p>
-                          </div>
-                          <span style={{
-                            padding: '0.25rem 0.75rem',
-                            background: '#e6fffa',
-                            color: '#047857',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: '600'
-                          }}>
-                            {cv.template || 'Classic'}
-                          </span>
-                        </div>
-
-                        <div style={{ marginBottom: '1rem', padding: '0.75rem', background: '#f7fafc', borderRadius: '6px' }}>
-                          <p style={{ fontSize: '0.875rem', color: '#4a5568', marginBottom: '0.25rem' }}>
-                            <strong>Created:</strong> {new Date(cv.createdAt).toLocaleDateString()}
+                  <Link
+                    key={cv._id}
+                    to={`/cv-history/${cv._id}`}
+                    className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex justify-between items-start gap-3 mb-4">
+                        <div className="min-w-0">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                            {cv.companyName || 'Unknown Company'}
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                            {cv.roleName || 'Target Role'}
                           </p>
-                          {cv.analysisResults?.score && (
-                            <p style={{ fontSize: '0.875rem', color: '#4a5568', margin: 0 }}>
-                              <strong>Match Score:</strong> {cv.analysisResults.score}%
-                            </p>
-                          )}
                         </div>
+                        <span className="shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                          {cv.template || 'ATS Classic'}
+                        </span>
                       </div>
-                      
-                      {/* ✅ MODIFIED: Removed download button, kept delete */}
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: 'auto' }}>
-                         <button
-                          onClick={(e) => handleDelete('cv', cv._id, e)}
-                          style={{
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '500',
-                            color: '#e53e3e',
-                            background: 'white',
-                            border: '1px solid #e53e3e',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          🗑️ Delete
-                        </button>
+
+                      <div className="mb-5 p-3.5 bg-gray-50 dark:bg-gray-700/40 rounded-xl border border-gray-100 dark:border-gray-700/60 space-y-1.5">
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          <span className="font-semibold text-gray-700 dark:text-gray-200">Created:</span>{' '}
+                          {new Date(cv.createdAt).toLocaleDateString(undefined, {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </p>
+                        {cv.analysisResults?.score !== undefined && (
+                          <div className="flex items-center justify-between text-xs pt-1">
+                            <span className="font-semibold text-gray-700 dark:text-gray-200">ATS Match Score:</span>
+                            <span className="font-extrabold text-blue-600 dark:text-blue-400">
+                              {cv.analysisResults.score}%
+                            </span>
+                          </div>
+                        )}
                       </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between gap-3 mt-auto">
+                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        <span>View Details</span>
+                        <span>→</span>
+                      </span>
+
+                      <button
+                        onClick={(e) => handleDelete('cv', cv._id, e)}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg text-xs font-medium transition-colors"
+                        title="Delete CV Record"
+                      >
+                        🗑️ Delete
+                      </button>
                     </div>
                   </Link>
                 ))}
@@ -305,107 +256,97 @@ const History = () => {
           </div>
         )}
 
-        {/* Cover Letter History Tab (This part is unchanged) */}
+        {/* Cover Letter History Tab */}
         {activeHistoryTab === 'cover-letter-history' && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: '#2d3748' }}>
-              💼 Your Cover Letter History
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span>💼</span> Your Generated Cover Letters
+              </h2>
+              <Link
+                to="/cover-letter"
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1.5"
+              >
+                <span>➕ Generate New</span>
+              </Link>
+            </div>
 
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '3rem', color: '#718096' }}>
-                <p>Loading...</p>
+              <div className="text-center py-20">
+                <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-500 dark:text-gray-400">Loading cover letters...</p>
               </div>
             ) : coverLetterHistory.length === 0 ? (
-              <div style={{
-                background: 'white',
-                borderRadius: '12px',
-                padding: '3rem',
-                textAlign: 'center',
-                border: '2px dashed #cbd5e0'
-              }}>
-                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📭</div>
-                <h3 style={{ fontSize: '1.25rem', color: '#4a5568', marginBottom: '0.5rem' }}>
-                  No Cover Letter History Yet
+              <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 text-center border-2 border-dashed border-gray-300 dark:border-gray-700 shadow-sm max-w-xl mx-auto">
+                <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                  📭
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  No Cover Letters Yet
                 </h3>
-                <p style={{ color: '#718096' }}>
-                  Generate your first cover letter in the Dashboard to see it here!
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                  Craft high-impact tailored cover letters for any target company using our AI writer!
                 </p>
+                <Link
+                  to="/cover-letter"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl font-semibold shadow-md transition-all transform hover:scale-105 active:scale-95"
+                >
+                  <span>✍️ Generate Cover Letter</span>
+                </Link>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {coverLetterHistory.map((letter) => (
-                  <div key={letter._id} style={{
-                    background: 'white',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    border: '1px solid #e2e8f0',
-                    transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#2d3748', marginBottom: '0.25rem' }}>
-                          {letter.company || 'Unknown Company'}
-                        </h3>
-                        <p style={{ fontSize: '0.875rem', color: '#718096' }}>
-                          {letter.role || 'Unknown Role'}
+                  <div
+                    key={letter._id}
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-200 dark:border-gray-700 transition-all duration-300 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex justify-between items-start gap-3 mb-4">
+                        <div className="min-w-0">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">
+                            {letter.company || 'Unknown Company'}
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                            {letter.role || 'Target Role'}
+                          </p>
+                        </div>
+                        <span className="shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                          v{letter.version || 1}
+                        </span>
+                      </div>
+
+                      <div className="mb-5 p-3.5 bg-gray-50 dark:bg-gray-700/40 rounded-xl border border-gray-100 dark:border-gray-700/60 space-y-1.5">
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          <span className="font-semibold text-gray-700 dark:text-gray-200">Created:</span>{' '}
+                          {new Date(letter.createdAt).toLocaleDateString(undefined, {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          <span className="font-semibold text-gray-700 dark:text-gray-200">Style:</span>{' '}
+                          <span className="capitalize">{letter.template || 'Professional'}</span>
                         </p>
                       </div>
-                      <span style={{
-                        padding: '0.25rem 0.75rem',
-                        background: '#fef3c7',
-                        color: '#92400e',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        fontWeight: '600'
-                      }}>
-                        v{letter.version || 1}
-                      </span>
                     </div>
 
-                    <div style={{ marginBottom: '1rem', padding: '0.75rem', background: '#f7fafc', borderRadius: '6px' }}>
-                      <p style={{ fontSize: '0.875rem', color: '#4a5568', marginBottom: '0.25rem' }}>
-                        <strong>Created:</strong> {new Date(letter.createdAt).toLocaleDateString()}
-                      </p>
-                      <p style={{ fontSize: '0.875rem', color: '#4a5568', margin: 0 }}>
-                        <strong>Template:</strong> {letter.template || 'Professional'}
-                      </p>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center gap-2 mt-auto">
                       <button
                         onClick={() => handleDownloadCoverLetter(letter._id)}
-                        style={{
-                          flex: 1,
-                          padding: '0.5rem 1rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '500',
-                          color: 'white',
-                          background: '#805ad5',
-                          border: 'none',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          transition: 'background 0.2s'
-                        }}
+                        className="flex-1 py-2 px-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5"
                       >
-                        📥 Download
+                        <span>📥</span>
+                        <span>Download PDF</span>
                       </button>
+
                       <button
                         onClick={(e) => handleDelete('cover-letter', letter._id, e)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '500',
-                          color: '#e53e3e',
-                          background: 'white',
-                          border: '1px solid #e53e3e',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s'
-                        }}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg text-xs font-medium transition-colors"
+                        title="Delete Record"
                       >
-                        🗑️ Delete
+                        🗑️
                       </button>
                     </div>
                   </div>
