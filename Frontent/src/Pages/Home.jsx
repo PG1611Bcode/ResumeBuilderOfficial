@@ -25,13 +25,21 @@ const Home = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user ? (
-                <Link
-                  to="/dashboard"
-                  className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-                >
-                  <span className="relative z-10">Go to Dashboard</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link
+                    to="/create-resume"
+                    className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-2"
+                  >
+                    <span className="relative z-10">🚀 Create / Analyze Resume</span>
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    className="group px-8 py-4 border-2 border-gray-600 text-gray-300 rounded-full font-semibold text-lg hover:border-blue-500 hover:text-blue-400 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2"
+                  >
+                    <span>Dashboard</span>
+                    <span>→</span>
+                  </Link>
+                </div>
               ) : (
                 <>
                   <Link

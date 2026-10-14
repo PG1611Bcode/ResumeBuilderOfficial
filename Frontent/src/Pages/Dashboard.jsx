@@ -71,7 +71,6 @@ const Dashboard = () => {
   });
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   // Auto-scroll to templates if route is /templates or hash is #popular-templates
   useEffect(() => {
@@ -543,18 +542,12 @@ const Dashboard = () => {
                 </div>
 
                 {/* Card Actions */}
-                <div className="mt-4 pt-3 border-t border-gray-700/60 flex items-center gap-2">
-                  <button
-                    onClick={() => setSelectedTemplate(template)}
-                    className="flex-1 py-2 px-3 bg-gray-700/60 hover:bg-gray-700 text-gray-200 hover:text-white rounded-xl text-xs font-semibold transition-all border border-gray-600/50"
-                  >
-                    Preview
-                  </button>
+                <div className="mt-4 pt-3 border-t border-gray-700/60">
                   <button
                     onClick={() => handleUseTemplate(template.id)}
-                    className="flex-1 py-2 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md transition-all transform active:scale-95"
+                    className="w-full py-2.5 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-md transition-all transform active:scale-95 flex items-center justify-center gap-1.5"
                   >
-                    Use Template
+                    <span>Use Template in Builder →</span>
                   </button>
                 </div>
               </div>
@@ -563,159 +556,6 @@ const Dashboard = () => {
         </div>
 
       </main>
-
-      {/* Interactive Template Preview Modal */}
-      {selectedTemplate && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
-          onClick={() => setSelectedTemplate(null)}
-        >
-          <div
-            className="bg-gray-800 border border-gray-700 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-gray-700 mb-6">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <h3 className="text-2xl font-bold text-white">
-                    {selectedTemplate.name}
-                  </h3>
-                  <span
-                    className="text-xs font-bold px-2.5 py-0.5 rounded-full text-white"
-                    style={{ backgroundColor: selectedTemplate.color }}
-                  >
-                    {selectedTemplate.badge}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-400 mt-1">
-                  {selectedTemplate.description}
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedTemplate(null)}
-                className="w-9 h-9 rounded-full bg-gray-700/80 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center text-lg transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Template Paper Mockup */}
-            <div
-              className="bg-white text-gray-900 rounded-xl p-6 sm:p-8 shadow-2xl border border-gray-200 mb-6 font-sans text-xs sm:text-sm"
-              style={{ fontFamily: selectedTemplate.previewStyle?.fontFamily || 'Inter, sans-serif' }}
-            >
-              {/* Resume Header */}
-              <div className="border-b pb-3 mb-4 text-center">
-                <h1
-                  className="text-xl sm:text-2xl font-extrabold tracking-tight"
-                  style={{ color: selectedTemplate.color }}
-                >
-                  ALEX MORGAN, PMP
-                </h1>
-                <p className="text-gray-600 text-[11px] sm:text-xs mt-1">
-                  Senior Software Engineer & Team Lead • San Francisco, CA • alex.morgan@example.com • (555) 234-5678
-                </p>
-              </div>
-
-              {/* Summary */}
-              <div className="mb-4">
-                <h2
-                  className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-1.5"
-                  style={{ color: selectedTemplate.color }}
-                >
-                  Professional Summary
-                </h2>
-                <p className="text-gray-700 text-[11px] sm:text-xs leading-relaxed">
-                  Results-oriented software architect with 7+ years of experience scaling distributed backend systems and microservices. Proven track record improving latency by 45% and leading cross-functional teams to deliver enterprise cloud solutions.
-                </p>
-              </div>
-
-              {/* Experience */}
-              <div className="mb-4">
-                <h2
-                  className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-2"
-                  style={{ color: selectedTemplate.color }}
-                >
-                  Work Experience
-                </h2>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between items-baseline">
-                      <span className="font-bold text-gray-900">Lead Systems Engineer</span>
-                      <span className="text-[10px] text-gray-500">2022 – Present</span>
-                    </div>
-                    <p className="text-gray-600 text-[11px]">Apex Cloud Technologies • San Francisco, CA</p>
-                    <ul className="list-disc list-inside text-gray-700 text-[11px] mt-1 space-y-0.5">
-                      <li>Designed and deployed serverless microservices processing 12M+ daily requests.</li>
-                      <li>Architected automated CI/CD pipelines reducing deployment downtime by 80%.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills */}
-              <div className="mb-4">
-                <h2
-                  className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-1.5"
-                  style={{ color: selectedTemplate.color }}
-                >
-                  Technical Proficiencies
-                </h2>
-                <p className="text-gray-700 text-[11px]">
-                  <strong>Languages & Frameworks:</strong> JavaScript, TypeScript, Python, React, Node.js, Express, Go<br />
-                  <strong>Infrastructure & Tools:</strong> Docker, Kubernetes, AWS (Lambda, ECS), MongoDB, PostgreSQL, Git
-                </p>
-              </div>
-
-              {/* Education */}
-              <div>
-                <h2
-                  className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-1"
-                  style={{ color: selectedTemplate.color }}
-                >
-                  Education
-                </h2>
-                <div className="flex justify-between items-baseline text-[11px]">
-                  <span className="font-bold text-gray-900">B.S. in Computer Science</span>
-                  <span className="text-gray-500">University of California, Berkeley</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Template Features Highlights */}
-            <div className="mb-6 bg-gray-700/30 rounded-2xl p-4 border border-gray-700/50">
-              <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                ATS Optimization Features
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-300">
-                {selectedTemplate.features?.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-700">
-              <button
-                onClick={() => setSelectedTemplate(null)}
-                className="px-5 py-2.5 rounded-xl bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium text-sm transition-colors"
-              >
-                Close Preview
-              </button>
-              <button
-                onClick={() => handleUseTemplate(selectedTemplate.id)}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 transition-all transform hover:scale-105 active:scale-95"
-              >
-                Use This Template
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

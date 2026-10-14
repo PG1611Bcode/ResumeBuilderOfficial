@@ -118,6 +118,26 @@ router.post('/generate-cv-pdf', auth, async (req, res) => {
     }
 });
 
+// Alias for PDF generation (/api/pdf/generate)
+router.post('/generate', auth, async (req, res) => {
+    try {
+        console.log('PDF generation alias request received:', req.body.profileData?.template || req.body.template);
+        const profileData = req.body.profileData || req.body;
+        const pdf = await generatePdfAsBuffer(profileData);
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=professional-cv.pdf',
+            'Content-Length': pdf.length
+        });
+
+        res.send(pdf);
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        res.status(500).json({ message: 'Error generating PDF', error: error.message });
+    }
+});
+
 
 // ========================================================
 // ✨ NEW ROUTE: Email CV
@@ -352,19 +372,18 @@ function formatContentWithBullets(contentArray) {
 
 
 function generateProfessionalHTML(data, profileData) {
-    const template = profileData.template || 'classic';
+    const template = (profileData.template || 'classic').toLowerCase();
     
-    switch (template) {
-        case 'modern':
-            return generateModernTemplate(data, profileData);
-        case 'creative':
-            return generateCreativeTemplate(data, profileData);
-        case 'minimal':
-            return generateMinimalTemplate(data, profileData);
-        case 'technical':
-            return generateTechnicalTemplate(data, profileData);
-        default:
-            return generateClassicTemplate(data, profileData);
+    if (template.includes('modern')) {
+        return generateModernTemplate(data, profileData);
+    } else if (template.includes('creative') || template.includes('compact') || template.includes('ivy')) {
+        return generateCreativeTemplate(data, profileData);
+    } else if (template.includes('minimal')) {
+        return generateMinimalTemplate(data, profileData);
+    } else if (template.includes('tech')) {
+        return generateTechnicalTemplate(data, profileData);
+    } else {
+        return generateClassicTemplate(data, profileData);
     }
 }
 
