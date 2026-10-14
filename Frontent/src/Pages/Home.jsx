@@ -14,7 +14,7 @@ const Home = () => {
           <div className="text-center animate-fade-in-up">
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-6">
               Smart Resume{' '}
-              <span className="relative mix-blend-difference bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+              <span className="relative inline-block text-pink-400 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                 Screening
                 <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-pulse"></div>
               </span>

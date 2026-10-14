@@ -8,6 +8,20 @@ export default defineConfig({
   server: {
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+      '/users': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+      '/auth': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      }
     }
   }
 })
