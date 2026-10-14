@@ -1,65 +1,16 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "Backend/app.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "Frontent/dist"
-      }
-    }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/Backend/app.js" },
+    { "source": "/auth/(.*)", "destination": "/Backend/app.js" },
+    { "source": "/users/(.*)", "destination": "/Backend/app.js" },
+    { "source": "/(.*)", "destination": "/Frontent/dist/index.html" }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/(.*)",
-      "headers": {
-        "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
-      },
-      "continue": true
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/api",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/auth/(.*)",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/auth",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/users/(.*)",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/users",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/health",
-      "dest": "Backend/app.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "Frontent/dist/assets/$1"
-    },
-    {
-      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|css|js|json|webmanifest|txt|woff|woff2))",
-      "dest": "Frontent/dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "Frontent/dist/index.html"
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }
+      ]
     }
   ]
 }
