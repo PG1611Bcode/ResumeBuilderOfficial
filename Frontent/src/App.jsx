@@ -67,6 +67,25 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="/create-resume" element={<Home />} />
+
+            <Route 
+              path="/settings" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/templates" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </div>
       </Router>
